@@ -1,0 +1,12 @@
+package kr.or.inair.companymember.aiquestion.service;
+import kr.or.inair.companymember.aiquestion.dao.IAIQuestionDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMemberAIQuestionServiceImpl implements IAIQuestionService {
+	@Autowired
+	private IAIQuestionDao aiQuestionDao;
+
+}

@@ -1,0 +1,12 @@
+package kr.or.inair.individualmember.hopepro.service;
+import kr.or.inair.individualmember.hopepro.dao.IHopePRODao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IHopePROServiceImpl implements IHopePROService {
+	@Autowired
+	private IHopePRODao hopeProfessionDao;
+
+}

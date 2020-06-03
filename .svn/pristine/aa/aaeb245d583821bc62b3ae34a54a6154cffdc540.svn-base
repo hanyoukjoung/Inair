@@ -1,0 +1,36 @@
+package kr.or.inair.vo;
+
+public class COM_DropVO {
+	private String com_dropetc;
+	private String com_id;
+	private String com_secsn;
+	private String com_secsnnum;
+	public String getCom_dropetc() {
+		return com_dropetc;
+	}
+	public void setCom_dropetc(String com_dropetc) {
+		this.com_dropetc = com_dropetc;
+	}
+	public String getCom_id() {
+		return com_id;
+	}
+	public void setCom_id(String com_id) {
+		this.com_id = com_id;
+	}
+	public String getCom_secsn() {
+		return com_secsn;
+	}
+	public void setCom_secsn(String com_secsn) {
+		this.com_secsn = com_secsn;
+	}
+	public String getCom_secsnnum() {
+		return com_secsnnum;
+	}
+	public void setCom_secsnnum(String com_secsnnum) {
+		this.com_secsnnum = com_secsnnum;
+	}
+	
+	
+	
+
+}

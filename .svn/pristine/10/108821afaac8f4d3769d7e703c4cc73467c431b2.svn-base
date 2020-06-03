@@ -1,0 +1,14 @@
+package kr.or.inair.admin.comdrop.service;
+
+import kr.or.inair.admin.comdrop.dao.IAdminCOMDropDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+
+@Service
+public class IAdminCOMDropServiceImpl implements IAdminCOMDropService {
+	@Autowired
+	private IAdminCOMDropDao comSecessionDao;
+
+}

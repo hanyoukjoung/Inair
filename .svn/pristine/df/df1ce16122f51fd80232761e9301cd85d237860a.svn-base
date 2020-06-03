@@ -1,0 +1,5 @@
+package kr.or.inair.admin.employment.service;
+
+public interface IAdminEmploymentService {
+
+}

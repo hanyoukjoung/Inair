@@ -1,0 +1,12 @@
+package kr.or.inair.admin.comprofile.service;
+import kr.or.inair.admin.comprofile.dao.IAdminCOMProfileDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IAdminCOMProfileServiceImpl implements IAdminCOMProfileService {
+	@Autowired
+	private IAdminCOMProfileDao comProfileDao;
+
+}

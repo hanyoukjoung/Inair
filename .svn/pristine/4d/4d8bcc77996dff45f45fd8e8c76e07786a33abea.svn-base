@@ -1,0 +1,5 @@
+package kr.or.inair.admin.language.service;
+
+public interface IAdminLanguageService {
+
+}

@@ -1,0 +1,23 @@
+package kr.or.inair.resboardfile.service;
+import java.util.Map;
+
+import kr.or.inair.resboardfile.dao.IRESBoardFileDao;
+import kr.or.inair.vo.Resboard_FileVO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IRESBoardFileServiceImpl implements IRESBoardFileService {
+	@Autowired
+	private IRESBoardFileDao referenceFileDao;
+
+	@Override
+	public Resboard_FileVO resboardfileItemInfo(Map<String, String> param)
+			throws Exception {
+		Resboard_FileVO resboardFileInfo = null;
+		resboardFileInfo = referenceFileDao.resboardfileItemInfo(param);
+		return resboardFileInfo;
+	}
+
+}

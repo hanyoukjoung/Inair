@@ -1,0 +1,12 @@
+package kr.or.inair.admin.lowindustry.service;
+import kr.or.inair.admin.lowindustry.dao.IAdminLowIndustryDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IAdminLowIndustryServiceImpl implements IAdminLowIndustryService {
+	@Autowired
+	private IAdminLowIndustryDao lowIndustryDao;
+
+}

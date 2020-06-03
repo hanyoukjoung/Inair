@@ -1,0 +1,12 @@
+package kr.or.inair.companymember.airesult.service;
+import kr.or.inair.companymember.airesult.dao.ICompanyMEMAIResultDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMEMAIResultServiceImpl implements ICompanyMEMAIResultService {
+	@Autowired
+	private ICompanyMEMAIResultDao aiResultDao;
+
+}

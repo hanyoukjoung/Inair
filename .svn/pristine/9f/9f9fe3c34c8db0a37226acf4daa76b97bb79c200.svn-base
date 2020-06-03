@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lowpro">
+	<typeAlias alias="lowPROVO" type="kr.or.inair.vo.LowProVO"/>
+	
+	<statement id="lowproList" resultClass="lowPROVO">
+		SELECT * 
+		FROM   LOWPRO 
+		WHERE  UPPRO_NUM = #uppro_num#
+	</statement>
+	
+	<statement id="selectLowproList" resultClass="lowPROVO">
+		SELECT A.LOWPRO_NUM, A.UPPRO_NUM, A.LOWPRO_NAME 
+		FROM   LOWPRO A, (SELECT UPPRO_NUM FROM LOWPRO WHERE LOWPRO_NUM = #lowpro_num#) B
+		WHERE  A.UPPRO_NUM = B.UPPRO_NUM
+	</statement>
+	
+	<select id="getLowPROList" resultClass="lowPROVO">
+		SELECT * 
+		FROM   LOWPRO 
+		WHERE  UPPRO_NUM = #uppro_num#
+	</select>
+	
+	<select id="gowLowProfession" resultClass="lowPROVO">
+		SELECT * FROM LOWPRO
+	</select>
+	
+</sqlMap> 

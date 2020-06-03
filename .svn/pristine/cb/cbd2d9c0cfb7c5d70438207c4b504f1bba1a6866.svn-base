@@ -1,0 +1,5 @@
+package kr.or.inair.admin.classofposition.dao;
+
+public interface IAdminClassOfPositionDao {
+
+}

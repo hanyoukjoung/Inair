@@ -1,0 +1,12 @@
+package kr.or.inair.admin.indvdlsecession.service;
+import kr.or.inair.admin.indvdlsecession.dao.IAdminINDVDLDropDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IAdminINDVDLDropServiceImpl implements IAdminINDVDLDropService {
+	@Autowired
+	private IAdminINDVDLDropDao indvdlSecessionDao;
+
+}

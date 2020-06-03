@@ -1,0 +1,16 @@
+package kr.or.inair.controller.individualmember;
+
+import kr.or.inair.individualmember.joboffer.service.IJobOfferService;
+import kr.or.inair.individualmember.joboffersubmit.service.IJOSubmitService;
+import kr.or.inair.individualmember.resume.service.IResumeService;
+
+import org.springframework.stereotype.Controller;
+
+@Controller
+public class IndividualMemberJobOfferController {
+	private IJobOfferService jopOfferService;
+	private IJOSubmitService jopOfferSubmitService;
+	private IResumeService resumeService;
+	
+	
+}

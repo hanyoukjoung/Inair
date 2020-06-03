@@ -1,0 +1,12 @@
+package kr.or.inair.companymember.resume.service;
+import kr.or.inair.individualmember.resume.dao.IResumeDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMEMResumeServiceImpl implements ICompanyMEMResumeService {
+	@Autowired
+	private IResumeDao resumeDao;
+
+}

@@ -1,0 +1,13 @@
+package kr.or.inair.companymember.lstcslist.service;
+import kr.or.inair.companymember.lstcslist.dao.ICompanyMEMLSTCSListDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMEMLSTCSListServiceImpl implements
+		ICompanyMEMLSTCSListService {
+	@Autowired
+	private ICompanyMEMLSTCSListDao linguidticeDatailsDao;
+
+}

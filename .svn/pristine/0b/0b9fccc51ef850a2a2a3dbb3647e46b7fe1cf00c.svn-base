@@ -1,0 +1,14 @@
+package kr.or.inair.admin.classofposition.service;
+
+import kr.or.inair.admin.classofposition.dao.IAdminClassOfPositionDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+
+public class IAdminClassOfPositionServiceImpl implements IAdminClassOfPositionService {
+	@Autowired
+	private IAdminClassOfPositionDao classOfPositionDao;
+
+}

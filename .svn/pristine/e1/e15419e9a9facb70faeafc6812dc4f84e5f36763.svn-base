@@ -1,0 +1,5 @@
+package kr.or.inair.academicdata.service;
+
+public interface IAcademicDataService {
+
+}

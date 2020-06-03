@@ -1,0 +1,5 @@
+package kr.or.inair.individualmember.joboffersubmit.dao.copy;
+
+public interface IJOSubmitDao {
+
+}

@@ -1,0 +1,11 @@
+package kr.or.inair.individualmember.ailist.dao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+@Repository
+public class IAIListDaoImpl implements IAIListDao {
+	@Autowired
+	private SqlMapClient client;
+
+}

@@ -1,0 +1,32 @@
+package kr.or.inair.individualmember.joboffer.dao;
+import java.util.List;
+
+import kr.or.inair.vo.Job_OfferVO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+@Repository
+public class IJobOfferDaoImpl implements IJobOfferDao {
+	
+	@Autowired
+	private SqlMapClient client;
+
+	@Override
+	public int getJobListCount() throws Exception {
+		return (int) client.queryForObject("jobOffer.getJobListCount");
+	}
+
+	@Override
+	public String insertjobOffer(Job_OfferVO insertJobOffer) throws Exception {
+		return (String)client.insert("jobOffer.insertjobOffer", insertJobOffer);
+	}
+
+	@Override
+	public List<Job_OfferVO> getJobOfferList(String com_id) throws Exception {
+		return client.queryForList("jobOffer.getJobOfferList", com_id);
+	}
+
+}

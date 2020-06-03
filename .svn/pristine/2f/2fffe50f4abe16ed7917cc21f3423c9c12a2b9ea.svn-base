@@ -1,0 +1,12 @@
+package kr.or.inair.career.service;
+import kr.or.inair.career.dao.ICareerDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICareerServiceImpl implements ICareerService {
+	@Autowired
+	private ICareerDao careerDao;
+
+}

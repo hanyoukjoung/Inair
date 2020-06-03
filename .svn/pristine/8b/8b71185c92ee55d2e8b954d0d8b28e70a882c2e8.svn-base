@@ -1,0 +1,12 @@
+package kr.or.inair.admin.employment.dao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+@Repository
+public class IAdminEmploymentDaoImpl implements IAdminEmploymentDao {
+	@Autowired
+	private SqlMapClient client;
+
+}

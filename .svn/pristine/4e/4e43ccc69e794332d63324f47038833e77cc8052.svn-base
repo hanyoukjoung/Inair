@@ -1,0 +1,182 @@
+package kr.or.inair.controller.companymember;
+
+import java.net.URLEncoder;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import kr.or.inair.company.servie.ICompanyService;
+import kr.or.inair.companyinfo.service.ICompanyInfoService;
+import kr.or.inair.companymember.aiquest.service.ICompanyMEMAIQUESTService;
+import kr.or.inair.companymember.careerhistory.service.ICareerHistoryService;
+import kr.or.inair.companymember.companymember.service.ICompanyMEMService;
+import kr.or.inair.companymember.comprofile.service.ICompanyMEMComProfileService;
+import kr.or.inair.companymember.joboffer.service.ICompanyMEMJobOfferService;
+import kr.or.inair.companymember.joboffersubmit.service.ICompanyMEMJOSubmitService;
+import kr.or.inair.individualmember.classofposition.service.IClassOfPositionService;
+import kr.or.inair.individualmember.employment.service.IEmploymentService;
+import kr.or.inair.individualmember.finalacademic.service.IFinalAcademicService;
+import kr.or.inair.individualmember.joboffer.service.IJobOfferService;
+import kr.or.inair.individualmember.jobofferfile.service.copy.IJobOfferFileService;
+import kr.or.inair.individualmember.lowindustry.service.ILowIndustryService;
+import kr.or.inair.individualmember.lowpro.service.ILowPROService;
+import kr.or.inair.individualmember.salary.service.ISalaryService;
+import kr.or.inair.individualmember.upindustry.service.IUpIndustryService;
+import kr.or.inair.individualmember.uppro.service.IUpPROService;
+import kr.or.inair.utiles.AttachFileMapper;
+import kr.or.inair.vo.COM_ProfileVO;
+import kr.or.inair.vo.CareerHistoryVO;
+import kr.or.inair.vo.CareerVO;
+import kr.or.inair.vo.ClassOfPositionVO;
+import kr.or.inair.vo.CompanyInfoVO;
+import kr.or.inair.vo.CompanyMemVO;
+import kr.or.inair.vo.CompanyVO;
+import kr.or.inair.vo.EmploymentVO;
+import kr.or.inair.vo.Final_AcademicVO;
+import kr.or.inair.vo.Job_OfferVO;
+import kr.or.inair.vo.Job_Offer_FileVO;
+import kr.or.inair.vo.LowIndustryVO;
+import kr.or.inair.vo.SalaryVO;
+import kr.or.inair.vo.UpIndustryVO;
+import kr.or.inair.vo.UpProVO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+@Controller
+@RequestMapping("/companyMember/jobOffer/")
+public class CompanyMemberJobOfferController {
+	@Autowired
+	private IEmploymentService employmentService;
+	@Autowired
+	private ISalaryService salaryService;
+	@Autowired
+	private IUpPROService upPROService;
+	@Autowired
+	private IUpIndustryService upIndustryService;
+	@Autowired
+	private ILowPROService lowPROService;
+	@Autowired
+	private ILowIndustryService lowIndustryService;
+	@Autowired
+	private IClassOfPositionService classOfPositionService;
+	@Autowired
+	private ICompanyMEMService companyMEMService;
+	@Autowired
+	private ICompanyInfoService companyInfoService;
+	@Autowired
+	private ICompanyService companyService;
+	@Autowired
+	private ICompanyMEMComProfileService comProfileService;
+	@Autowired
+	private IJobOfferService jobOfferService;
+	@Autowired
+	private IFinalAcademicService finalAcademicService;
+	@Autowired
+	private AttachFileMapper fileMapper;
+	@Autowired
+	private IJobOfferFileService jobOfferFileService;
+	@Autowired
+	private ICareerHistoryService careerHistoryService;
+	
+	@RequestMapping("jobOfferHome")
+	public ModelAndView jobOfferHome(ModelAndView modelAndView,
+									 HttpSession session,
+									 CompanyMemVO companyMemVo) throws Exception{
+		companyMemVo = ((CompanyMemVO)session.getAttribute("LOGIN_COMMEMINFO"));
+		
+		List<Job_OfferVO> jobOfferList = jobOfferService.getJobOfferList(companyMemVo.getCom_id());
+		
+		modelAndView.addObject("jobOfferList", jobOfferList);
+		
+		modelAndView.setViewName("companyMember/jobOffer/jobOfferHome");
+		
+		return modelAndView;
+	}
+	
+	@RequestMapping("jobOfferSelectInsertForm")
+	public ModelAndView jobOfferSelectInsertForm(ModelAndView modelAndView,
+												 HttpSession session,
+												 CompanyMemVO companyMemVo,
+												 CompanyVO companyVo) throws Exception{
+		companyMemVo = ((CompanyMemVO)session.getAttribute("LOGIN_COMMEMINFO"));
+		companyVo = companyService.getCompanyInfo(companyMemVo.getCorp_code());
+		
+		modelAndView.addObject("companyVo", companyVo);
+		
+		modelAndView.setViewName("companyMember/jobOffer/jobOfferSelectInsertForm");
+		
+		return modelAndView;
+	}
+	
+	@RequestMapping("jobOfferInsertForm")
+	public ModelAndView jobOfferInsertForm(ModelAndView modelAndView,
+										   HttpSession session,
+										   CompanyMemVO companyMemVo) throws Exception{
+		List<EmploymentVO> employmentList = employmentService.getEmploymentList();
+		List<SalaryVO> salaryList = salaryService.getSalaryList();
+		List<UpProVO> upPROList = upPROService.getUpPROList();
+		List<UpIndustryVO> upIndustryList = upIndustryService.getUpIndustryList();
+		List<ClassOfPositionVO> classOfPositionList = classOfPositionService.getClassOfPositionList();
+		List<Final_AcademicVO> finalAcademicList = finalAcademicService.getFinalAcademicList();
+		List<CareerHistoryVO> careerHistoryList = careerHistoryService.getcareerHistoryList();
+		
+		companyMemVo = ((CompanyMemVO)session.getAttribute("LOGIN_COMMEMINFO"));
+		
+		List<CompanyInfoVO> companyInfoList = companyInfoService.getCompanyInfo(companyMemVo.getCorp_code());
+		CompanyVO companyVo = companyService.getCompanyInfo(companyMemVo.getCorp_code());
+		LowIndustryVO industryInfo = lowIndustryService.getIndustryInfo(companyMemVo.getLwinduty_num());
+		
+		CompanyInfoVO companyInfofirst = null;
+		CompanyInfoVO companyInfosecond = null; 
+		for(int i=0; i<companyInfoList.size(); i++){
+			if(companyInfoList.get(i).getSexdstn().equals("여성")){
+				companyInfofirst = companyInfoList.get(i);
+			}else{
+				companyInfosecond = companyInfoList.get(i);
+			}
+			
+		}
+		
+//		COM_ProfileVO comProfile = comProfileService.getComProfile(com_id);
+		
+		
+		modelAndView.addObject("employmentList", employmentList);
+		modelAndView.addObject("salaryList", salaryList);
+		modelAndView.addObject("upPROList", upPROList);
+		modelAndView.addObject("upIndustryList", upIndustryList);
+		modelAndView.addObject("classOfPositionList", classOfPositionList);
+		modelAndView.addObject("finalAcademicList", finalAcademicList);
+		modelAndView.addObject("careerHistoryList", careerHistoryList);
+		
+		modelAndView.addObject("companyInfofirst", companyInfofirst);
+		modelAndView.addObject("companyInfosecond", companyInfosecond);
+		modelAndView.addObject("companyVo", companyVo);
+		modelAndView.addObject("industryInfo", industryInfo);
+		
+		modelAndView.setViewName("companyMember/jobOffer/jobOfferInsertForm");
+		
+		return modelAndView;
+	}
+	
+	@RequestMapping("insertJobOffer")
+	public String insertJobOffer(Job_OfferVO insertJobOffer,
+								 @RequestParam("jobOfferFiles") MultipartFile[] items) throws Exception{
+		
+		String jo_num = jobOfferService.insertjobOffer(insertJobOffer);
+		
+		List<Job_Offer_FileVO> insertJobOfferFileList = null;
+		if(items != null){
+			insertJobOfferFileList = fileMapper.jobOfferFileMapper(items, jo_num);
+			jobOfferFileService.insertJobOfferFileList(insertJobOfferFileList);
+		}
+
+		String unEncodingMessage = URLEncoder.encode("구인공고 등록이 완료되었습니다.", "UTF-8");
+		String encodingMessage = URLEncoder.encode(unEncodingMessage, "UTF-8");
+		return "redirect:/companyMember/jobOffer/jobOfferHome.do?message=" + encodingMessage;
+	}
+}

@@ -1,0 +1,12 @@
+package kr.or.inair.individualmember.aiface.service;
+import kr.or.inair.individualmember.aiface.dao.IAIFaceDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IAIFaceServiceImpl implements IAIFaceService {
+	@Autowired
+	private IAIFaceDao aiFaceDao;
+
+}

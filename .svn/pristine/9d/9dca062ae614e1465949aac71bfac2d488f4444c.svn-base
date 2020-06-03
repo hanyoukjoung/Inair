@@ -1,0 +1,5 @@
+package kr.or.inair.individualmember.ailist.dao;
+
+public interface IAIListDao {
+
+}

@@ -1,0 +1,12 @@
+package kr.or.inair.individualmember.airesult.service;
+import kr.or.inair.individualmember.airesult.dao.IAIResultDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IAIResultServicImpl implements IAIResultService {
+	@Autowired
+	private IAIResultDao aiResultDao;
+
+}

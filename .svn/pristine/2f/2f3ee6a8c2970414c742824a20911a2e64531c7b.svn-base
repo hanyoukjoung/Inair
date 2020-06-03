@@ -1,0 +1,12 @@
+package kr.or.inair.companymember.uppro.service;
+import kr.or.inair.companymember.uppro.dao.ICompanyMEMUpPRODao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMEMUpPROServiceImpl implements ICompanyMEMUpPROService {
+	@Autowired
+	private ICompanyMEMUpPRODao upProfessionDao;
+
+}

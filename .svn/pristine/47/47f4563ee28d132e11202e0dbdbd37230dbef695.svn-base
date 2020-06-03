@@ -1,0 +1,64 @@
+package kr.or.inair.utiles;
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import kr.or.inair.golbal.GlobalConstant;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+/*
+ * 세션에는 면접자가 말한 모든 단어를 <단어, 횟수>형태로 촤르륵 저장하고
+ * 
+ * 컨트롤러에게 보낼땐 사용횟수가 5이상인 것들만 보낸다.
+ */
+
+public class WordCountingFromString {
+	
+	@Autowired
+	ObjectMapper mapper;
+	
+	public Map<String, Integer> wordCountingFromString(String sentences, HttpSession session) throws Exception{
+		Map<String, Integer> words = wordExtractor(sentences);
+		
+		
+	}
+	
+	// adams.ai에 문장들을 보내어 단어들을 추출하고 List<Map<String, Integer)형태로 <단어, 횟수>을 반환한다.
+	private Map<String, Integer> wordExtractor(String sentences) throws Exception {
+		String utfSentences = URLEncoder.encode(sentences, "UTF-8");
+		
+		String url = "http://api.adams.ai/datamixiApi/tms?analysis=pos&lang=kor&key=" + GlobalConstant.ADAMS_KEY + "&query=" + utfSentences;
+		
+		Document doc = Jsoup.connect(url).get();
+		String docData = doc.text();
+		
+		Map<String, Object> params1 = mapper.readValue(docData, Map.class);
+		Map<String, Object> params2 = (Map<String, Object>) params1.get("return_object");
+		
+		List<Map<String, Object>> listMap1 = (List<Map<String, Object>>) params2.get("sentence");
+		List<Map<String, String>> listMap2 = (List<Map<String, String>>) listMap1.get(0).get("word");
+		
+		Map<String, Integer> returnData = new HashMap<String, Integer>();
+		
+		for (int i = 0; i < listMap2.size(); i++) {
+			if(returnData.containsKey(listMap2.get(i).get("text"))){
+				returnData.put(listMap2.get(i).get("text"), returnData.get(listMap2.get(i).get("text")) + 1);
+			} else {
+				returnData.put(listMap2.get(i).get("text"), 1);
+			}
+		}
+		
+		return returnData;
+	}
+	
+}

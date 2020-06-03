@@ -1,0 +1,23 @@
+package kr.or.inair.individualmember.jobofferfile.service.copy;
+
+import java.util.List;
+
+import kr.or.inair.individualmember.jobofferfile.dao.IJobOfferFileDao;
+import kr.or.inair.vo.Job_Offer_FileVO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IJobOfferFileServiceImpl implements IJobOfferFileService {
+	@Autowired
+	private IJobOfferFileDao jobOfferFileDao;
+
+	@Override
+	public void insertJobOfferFileList(
+			List<Job_Offer_FileVO> insertJobOfferFileList) throws Exception {
+		jobOfferFileDao.insertJobOfferFileList(insertJobOfferFileList);
+	}
+
+	
+}

@@ -1,0 +1,57 @@
+package kr.or.inair.individualmember.joboffer.service;
+
+import java.util.List;
+
+import kr.or.inair.companymember.recruitmentfield.service.IRecruitmentFieldService;
+import kr.or.inair.individualmember.joboffer.dao.IJobOfferDao;
+import kr.or.inair.vo.Job_OfferVO;
+import kr.or.inair.vo.Recruitment_FieldVO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class IJobOfferServiceImpl implements IJobOfferService {
+	
+	@Autowired
+	private IJobOfferDao jobOfferDao;
+	@Autowired
+	private IRecruitmentFieldService recruitmentFieldService;
+
+	@Transactional(propagation=Propagation.REQUIRES_NEW, readOnly=true)
+	@Override
+	public int getJobListCount() throws Exception {
+		return jobOfferDao.getJobListCount();
+	}
+
+	@Transactional(propagation=Propagation.REQUIRES_NEW, rollbackFor={Exception.class})
+	@Override
+	public String insertjobOffer(Job_OfferVO insertJobOffer) throws Exception {
+		
+		String jo_num = jobOfferDao.insertjobOffer(insertJobOffer);
+	
+		List<Recruitment_FieldVO> insertRecruitmentFieldList = null;
+		
+		if(insertJobOffer.getRecruitmentFieldList() != null){
+			for(Recruitment_FieldVO insertRecruitmentFieldInfo : insertJobOffer.getRecruitmentFieldList()){
+				if((insertRecruitmentFieldInfo.getRecruitment_field_name() != null) && (!insertRecruitmentFieldInfo.getRecruitment_field_name().equals(""))){
+					insertRecruitmentFieldInfo.setJo_num(jo_num);
+					insertRecruitmentFieldList.add(insertRecruitmentFieldInfo);
+				}
+			}
+			recruitmentFieldService.insertRecruitmentFieldList(insertRecruitmentFieldList);
+		}
+		
+		return jo_num;
+	}
+
+	@Transactional(propagation=Propagation.REQUIRES_NEW, readOnly=true)
+	@Override
+	public List<Job_OfferVO> getJobOfferList(String com_id) throws Exception {
+		return jobOfferDao.getJobOfferList(com_id);
+	}
+
+	
+}

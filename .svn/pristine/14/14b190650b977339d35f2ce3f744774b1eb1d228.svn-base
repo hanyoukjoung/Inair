@@ -1,0 +1,851 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="charset=UTF-8">
+<title>AI 모의면접</title>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath }/js/annyang.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
+<style type="text/css">
+html{
+	background-color: #1d213c;
+	height: 950px;
+	width: 1920px;
+}
+
+body{
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+}
+
+#showCondition{
+	cursor: pointer;
+}
+
+#head{
+	height: 30px;
+}
+
+#myProgress {
+	margin-top: -5px;
+	width: 100%;
+	background-color: #8a8889;
+}
+
+#myBar {
+	width: 1%;
+	height: 5px;
+	background-color: #ff0000;
+}
+
+.voice_element{
+	color: white;
+}
+
+.analysisProgress {
+	display: inline-block;
+	background-color: black;
+	width: 100%;
+}
+
+.analysisBar{
+	margin-bottom: 10px;
+	margin-top: 5px;
+	background-color: #5fbad5;
+	height: 15px;
+	width: 0%;
+}
+
+.face_element{
+	color: white;
+}
+
+.percentage{
+	margin-left: 5px;
+	color: white;
+	.
+	font-size: 10px;
+}
+
+#webcam{
+	background-color: black;
+}
+
+#message{
+	font-size: 18px;
+	color: white;
+	margin-left: 40px;
+	background: none;
+	font-weight: bold;
+	height: 50px;
+	resize: none;
+	width: 840px;
+	border: none;
+	margin-top: 60px;
+}
+
+.device_active_btn{
+	position: relative; 
+	float: right; 
+	height: 30px; 
+	width: 50px; 
+	padding-bottom: 30px; 
+	font-size: 12px; 
+	border: none; 
+	background-color: #c8c8c8; 
+	font-weight: 900; 
+	margin-top: 10px;
+}
+
+.btn_icon{
+	 position: absolute; 
+	 top: 23px; 
+	 left: 18px;
+}
+
+.content_div{
+	background-color: black;
+}
+
+.content_div_wrapper{
+	margin: 20px; 
+	height: 910px;
+}
+
+.label_key{
+	color: white;
+}
+
+.label_value{
+	color: white;
+}
+
+.title{
+	color: white;
+}
+
+cavas{
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	margin-bottom: -3px;
+	display: inline-block;
+}
+
+#top_x_div svg > g > rect {
+    fill: #000;
+}
+
+.radarchart_result{
+	display: none;
+}
+
+</style>
+<script type="text/javascript">
+Chart.defaults.global.animation = false;
+Chart.defaults.global.defaultFontColor = '#E0E0E0';
+Chart.defaults.scale.gridLines.color = '#9E9E9E';
+Chart.defaults.scale.gridLines.ZeroLineColor = '#9E9E9E';
+
+var i = 0;
+var stream;
+var video;
+var gainNode;
+var clientSentences;
+var camTestResult;
+var resistedFaceFileName;
+
+var voicePositive = 1;
+var voiceNegative = 1;
+var voiceNeutrality = 1;
+
+// 음성 긍정|부정|중립 파이차트
+google.charts.load("current", {packages:["corechart"]});
+google.charts.setOnLoadCallback(drawPieChart);
+
+function drawPieChart() {
+	var data = google.visualization.arrayToDataTable([
+		['Task', 'voice analysis'],
+		['긍정', voicePositive],
+		['부정', voiceNegative],
+		['중립', voiceNeutrality]
+	]);
+
+	var options = {
+		pieHole : 0.7,
+		backgroundColor : {
+			fill : '#000000'
+		},
+		slices : {0 : {color: '#52c2ff'}, 1 : {color : '#ff5252'}, 2: {color : 'ffb64f'} },
+		pieSliceText : 'none',
+		chartArea : {left : 10, width : '90%', height : '90%'},
+		legend : {textStyle : {fontSize: 20, color : '#ffffff'}}
+	};	
+
+	var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+	chart.draw(data, options);
+}
+
+$(function(){
+	
+	voiceMove(99.5, 'voice_calm');
+	voiceMove(50, 'voice_anger');
+	voiceMove(10, 'voice_happiness');
+	voiceMove(30, 'voice_sadness');
+	voiceMove(80, 'voice_vitality');
+	
+	faceMove(10, 'face_anger');
+	faceMove(20, 'face_contempt');
+	faceMove(30, 'face_disgust');
+	faceMove(40, 'face_fear');
+	faceMove(50, 'face_happiness');
+	faceMove(60, 'face_neutral');
+	faceMove(70, 'face_sadness');
+	faceMove(100, 'face_surpsise');
+	
+	createVoiceRadarchart('voice_radarchart', 30, 60, 100, 80, 30);
+	createFaceRadarchart('face_radarchart', 10, 30, 60, 40, 70, 19, 13, 99.5);
+	
+	init();
+	move();
+	
+	AITestMike();
+	
+	// 웹캠 버튼 활성화 클릭 이벤트
+	$('#cam_btn').click(function(){
+		if($('#cam_btn img').attr('src') == '${pageContext.request.contextPath }/images/on.png'){ // 켜져있을때
+			video.src = "";
+			$('#cam_btn img').attr('src', '${pageContext.request.contextPath }/images/off.png');
+		} else { // 꺼져있을때
+			init();
+			$('#cam_btn img').attr('src', '${pageContext.request.contextPath }/images/on.png');
+		}
+	});
+	
+	// 마이크 버튼 활성화 클릭 이벤트
+	$('#mic_btn').click(function(){
+		if($('#mic_btn img').attr('src') == '${pageContext.request.contextPath }/images/on.png'){ // 켜져있을때
+			gainNode.gain.value = 0;
+			$('#mic_btn img').attr('src', '${pageContext.request.contextPath }/images/off.png');
+		} else { // 꺼져있을때
+			gainNode.gain.value = 1;
+			$('#mic_btn img').attr('src', '${pageContext.request.contextPath }/images/on.png');
+		}
+	});
+	
+	$('#sttResult').change(function(){
+		
+		if($('#sttResult').val().trim() == "안녕하세요 만나서 반갑습니다") {
+			annyang.abort();
+			AITestFaceRegist();
+		} else {
+			$('#message').text("음성이 정확하게 인식되지 않습니다. 다시한번 말씀해주세요.");
+		}
+		
+	});
+	
+	// 바차트 아이콘 눌렀을때
+	$('#barchart_icon').click(function(){
+		$('.wrapper_content_barchart_result').css('display', 'none');
+		$('.wrapper_content_radarchart_result').css('display', 'block');
+	});
+	
+	// 레이다차트 아이콘 눌렀을때
+	$('#radarchart_icon').click(function(){
+		$('.wrapper_content_barchart_result').css('display', 'block');
+		$('.wrapper_content_radarchart_result').css('display', 'none');
+	});
+	
+});
+
+// 음성 분석 레이다 차트
+function createVoiceRadarchart(target, calm, anger, happiness, sadness, vitality){
+	var ctx = document.getElementById(target);
+	var myChart = new Chart(ctx, {
+		type : 'radar',
+		data : {
+			labels : ['차분', '분노', '행복', '슬픔', '활기'],
+			datasets : [{
+				label : '점수',
+				data : [calm, anger, happiness, sadness, vitality],
+				lineTension : 0.1,
+				backgroundColor: "rgba(178, 223, 219,0.2)",
+				borderColor : '#009688',
+				pointBackGroundColor : '#004D40',
+				pointBorderColor : '#fff',
+				pointHoverBackgroundColor : '#fff',
+				pointHoverBorderColor : 'rgba(255, 99, 132, 1)',
+			}]
+		},
+		options : {
+			responsive : false,
+			tooltips : {
+				enable : true,
+				mode : 'label'
+			},
+			legend : {
+				display : false
+			},
+			scale : {
+				gridLines : {
+					color : '#9E9E9E'
+				},
+				angleLines : {
+					color : '#9E9E9E'
+				},
+				reverse : false,
+				ticks : {
+					showLabelBackdrop : false,
+					min : 0,
+					max : 100
+				}
+			},
+			scaleOverride : false,
+			scaleSteps : 5,
+			scaleStepWidth : 20,
+			scalStartValue : 100
+		}
+	});
+}
+
+// 얼굴분석 레이다차트
+function createFaceRadarchart(target, anger, contempt, disgust, fear, happiness, neutral, sadness, surprise){
+	var ctx = document.getElementById(target);
+	var myChart = new Chart(ctx, {
+		type : 'radar',
+		data : {
+			labels : ['분노', '경멸', '혐오', '공포', '행복', '중립', '슬픔', '놀람'],
+			datasets : [{
+				label : '점수',
+				data : [anger, contempt, disgust, fear, happiness, neutral, sadness, surprise],
+				lineTension : 0.1,
+				backgroundColor: "rgba(178, 223, 219,0.2)",
+				borderColor : '#009688',
+				pointBackGroundColor : '#004D40',
+				pointBorderColor : '#fff',
+				pointHoverBackgroundColor : '#fff',
+				pointHoverBorderColor : 'rgba(255, 99, 132, 1)',
+			}]
+		},
+		options : {
+			responsive : false,
+			tooltips : {
+				enable : true,
+				mode : 'label'
+			},
+			legend : {
+				display : false
+			},
+			scale : {
+				gridLines : {
+					color : '#9E9E9E'
+				},
+				angleLines : {
+					color : '#9E9E9E'
+				},
+				reverse : false,
+				ticks : {
+					showLabelBackdrop : false,
+					min : 0,
+					max : 100
+				}
+			},
+			scaleOverride : false,
+			scaleSteps : 5,
+			scaleStepWidth : 20,
+			scalStartValue : 100
+		}
+	});
+}
+
+// AI모의면접 얼굴 저장 함수
+function AITestFaceRegist(){
+	var message = ["정상적으로 음성 인식이 확인되었습니다.",
+	               "다음은 캠 상태를 확인하겠습니다.",
+	               "캠 화면에 면접자의 얼굴만 나오도록 정위치 해주시기 바랍니다."];
+	
+	var i = 0;
+	var j = 0;
+	
+	var interval = setInterval(function(){
+		$('#message').text(message[i]);
+		$('#message').animate({opacity:"1"}, 3000);
+		
+		if(i != message.length - 1) { // 마지막 메시지가 아니면 메시지가 사라지다가
+			$('#message').animate({opacity:"0"}, 3000);
+		} else { // 마지막 메시지면 메시지가 사라지지않고 반복을 끝내라
+			clearInterval(interval);
+		}
+		
+		i++;
+		j++;
+		
+		// 면접자의 얼굴을 저장하고 한명의 얼굴만 인식되는지 확인
+		if(j == 3) {
+			var interval2 = setInterval(function(){
+				var result = camCapture();
+				
+				if(camTestResult == 0) {
+					$('#message').text("얼굴인식에 실패했습니다. 제대로 정위치 해주시길 바랍니다.");
+				} else if(camTestResult > 1) {
+					$('#message').text("다수의 얼굴을 인식했습니다. 면접자 한명만 정위치 해주시길 바랍니다.");
+				} else if(camTestResult == 1){
+					$('#message').text("면접자 얼굴을 인식함과 동시에 얼굴을 등록했습니다.");
+					clearInterval(interval2);
+				}
+			}, 1000);
+		}
+	}, 6000);
+}
+
+// AI모의면접 마이크테스트 실행함수
+function AITestMike() {
+	
+	var message = ["AI모의면접을 하기전에 몇가지 환경을 체크하겠습니다.", 
+	               "먼저 마이크 상태를 확인하겠습니다.",
+	               "\"안녕하세요 만나서 반갑습니다\"를 천천히 또박또박 말씀해주세요."];
+	var i = 0;
+	var j = 0;
+	
+	var interval = setInterval(function(){
+		$('#message').text(message[i]);
+		$('#message').animate({opacity:"1"}, 3000);
+		
+		if(i != message.length -1) {
+			$('#message').animate({opacity:"0"}, 3000);
+		} else {
+			clearInterval(interval);
+		}
+		
+		i++;
+		j++;
+		
+		// 마이크 안녕하세요 만나서 반갑습니다.가 제대로 들어오는 지 확인
+		if(j == 3){
+			annyangStart("test");
+		}
+	}, 6000);
+}
+
+// 화면에 웹캠화면 보여주는 함수 (async를 해야 동기화가 되어 try-catch에서 에러를 잡을 수 있다.)
+async function init() {
+	
+	var constraints = {
+			video : true
+		};
+	
+	try {
+		stream = await navigator.mediaDevices.getUserMedia(constraints);
+		handleSuccess(stream);
+	} catch (e) {
+		handleError(e);
+	}
+	audioGraph();
+}
+
+// 오디오 볼륨 그래프 생성 함수
+function audioGraph() {
+	var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+	var voiceSelect = "off";
+	var source;
+	
+	var analyser = audioCtx.createAnalyser();
+	analyser.minDecibels = -90;
+	analyser.maxDecibels = -10;
+	analyser.soomthingTimeContstant = 0.85;
+
+	var distortion = audioCtx.createWaveShaper();
+	gainNode = audioCtx.createGain();
+	var biquadFilter = audioCtx.createBiquadFilter();
+	var convolver = audioCtx.createConvolver();
+	
+	function makeDistortionCurve(amount) {
+		var k = typeof amount === 'number' ? amount : 50,
+			n_samples = 44100,
+			curve = new Float32Array(n_samples),
+			deg = Math.PI / 180,
+			i = 0,
+			x;
+		for ( ; i < n_samples; ++i ) {
+			x = i * 2 / n_samples - 1;
+			curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+		}
+		return curve;
+	};
+	
+	var soundSource;
+	
+	ajaxRequest = new XMLHttpRequest();
+	
+	ajaxRequest.open('GET', 'https://mdn.github.io/voice-change-o-matic/audio/concert-crowd.ogg', true);
+	
+	ajaxRequest.responseType = 'arraybuffer';
+	
+	ajaxRequest.onload = (function(){
+		var audioData = ajaxRequest.response;
+		
+		audioCtx.decodeAudioData(audioData, function(buffer){
+			soundSource = audioCtx.createBufferSource();
+			convolver.buffer = buffer;
+		}, function(e){ console.log("Error with decoding audio data" + e.err);});
+	});
+	
+	ajaxRequest.send();
+	
+	var canvas = document.querySelector('.visualizer');
+	var canvasCtx = canvas.getContext("2d");
+	
+	var intendedWidth = 640;
+	canvas.setAttribute('width', intendedWidth);
+	
+	var visualSelect = 'frequencybars';
+	
+	var drawVisual;
+	
+	if (navigator.mediaDevices.getUserMedia) {
+		var constraints = {audio: true};
+		navigator.mediaDevices.getUserMedia (constraints)
+			.then(
+				function(stream) {
+					source = audioCtx.createMediaStreamSource(stream);
+					source.connect(distortion);
+					distortion.connect(biquadFilter);
+					biquadFilter.connect(gainNode);
+					convolver.connect(gainNode);
+					gainNode.connect(analyser);
+					analyser.connect(audioCtx.destination);
+					
+					visualize();
+					voiceChange();
+				})
+		        .catch( function(err) { console.log('The following gUM error occured: ' + err);})
+	} else {
+		console.log('getUserMedia not supported on your browser!');
+	}
+	
+	function visualize() {
+		WIDTH = canvas.width;
+		HEIGHT = canvas.height;
+		
+		var visualSetting = visualSelect;
+		
+		if(visualSetting === "frequencybars") {
+			analyser.fftSize = 256;
+			var bufferLengthAlt = analyser.frequencyBinCount;
+			var dataArrayAlt = new Uint8Array(bufferLengthAlt);
+			
+			canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+			
+			var drawAlt = function() {
+				drawVisual = requestAnimationFrame(drawAlt);
+				
+				analyser.getByteFrequencyData(dataArrayAlt);
+				
+				canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+				canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+				
+				var barWidth = (WIDTH / bufferLengthAlt) * 2.5;
+				var barHeight;
+				var x = 0;
+				
+				for(var i = 0; i < bufferLengthAlt; i++) {
+					barHeight = dataArrayAlt[i];
+					
+					canvasCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
+					canvasCtx.fillRect(x,HEIGHT-barHeight/2,barWidth,barHeight/2);
+					
+					x += barWidth + 1;
+				}
+			};
+			
+			drawAlt();
+		}
+	}
+	
+	function voiceChange() {
+		distortion.oversample = '4x';
+		biquadFilter.gain.setTargetAtTime(0, audioCtx.currentTime, 0)
+		
+		var voiceSetting = voiceSelect.value;
+	}
+}
+
+// 비디오 태그에 영상 재생하는 함수
+function handleSuccess(stream) {
+	video = document.querySelector('video');
+	
+	video.srcObject = stream;
+	video.play();
+}
+
+// 웹캠화면 try-catch 처리 함수
+function handleError(error){
+	if (error.name == 'ConstraintNotSatisfiedError') {
+		alert("웹캠 장치 환경이 적합하지 않습니다.");
+		studyUpdateClose();
+	} else if (error.name == 'PermissionDeniedError') {
+		alert("웹캠에 대한 액세스가 거부되었습니다.");
+		studyUpdateClose();
+	} else {
+		alert("장치가 올바르게 연결되어 있지 않거나 작동하지 않습니다.");
+		studyUpdateClose();
+	}
+}
+
+// ai면접 창 진행률 이동 함수
+function move() {
+  if (i == 0) {
+    i = 1;
+    var elem = document.getElementById("myBar");
+    var width = 1;
+    var id = setInterval(frame, 10);
+    function frame() {
+      if (width >= 1000) {
+        clearInterval(id);
+        i = 0;
+      } else {
+        width++;
+        elem.style.width = width/10 + "%";
+      }
+    }
+  }
+}
+
+// 음성 분석 결과 퍼센트지 변경 함수
+function voiceMove(percent, target) {
+	$('#' + target).css('width', percent + "%");
+	$('#' + target + "_percent").text(percent + "%");
+}
+
+function faceMove(percent, target) {
+	$('#' + target).css('width', percent + "%");
+	$('#' + target + "_percent").text(percent + "%");
+}
+
+// 부모창 새로고침
+function studyUpdateClose(){
+	opener.document.location.reload();
+}
+
+// 안녕 실행 함수
+function annyangStart(target) {
+	annyang.start({autoRestart : false, continuous : true})
+	var recognition = annyang.getSpeechRecognizer();
+	var final_transcript = '';
+	recognition.onresult = function(event) {
+		for (var i = event.resultIndex; i < event.results.length; i++) {
+			if (event.results[i].isFinal) {
+				final_transcript = event.results[i][0].transcript;
+			}
+		}
+		
+		if(target == "test"){
+			changeInputHiddenValue(final_transcript);
+		} else {
+			clientSentences += final_transcript;
+		}
+	}
+}
+
+// 인풋 타입 히든 친구 값 변경 하는 함수 (이걸써야 인풋히든친구 값이 변경할때 채인지 함수가 실행됨)
+function changeInputHiddenValue(value) {
+	$('#sttResult').val(value).trigger('change');
+}
+
+// 웹캠 영상 자동으로 캡처하는 함수 그리고 캡처후 이미지를 서버로 전송하는 함수
+function camCapture() {
+	var video = document.getElementById('webcam');
+	var canvas = document.getElementById('cam_capture_image');
+	var context = canvas.getContext('2d');
+	
+	canvas.width = video.clientWidth;
+	canvas.height = video.clientHeight;
+	context.drawImage(video, 0, 0, video.clientWidth, video.clientHeight);
+	
+	uploadCanvas();
+}
+
+// 캔버스 이미지를 서버로 전송하기
+function uploadCanvas(){
+	var canvas = document.getElementById('cam_capture_image');
+	var canvasImgStr = canvas.toDataURL('image/png', 1.0);
+	
+	// 캔버스의 이미지를 업로드1함
+	$.ajax({
+		url : "${pageContext.request.contextPath}/AIIMT/canvasDownload.do",
+		data : {"strImg" : canvasImgStr},
+		type : "post",
+		dataType : "text",
+		error : function(result){
+			alert("캔버스 이미지를 서버로 전송하는 도중에러가 발생했습니다. 에러코드 = " + result.status);
+		},
+		success : function(result){
+			faceAnalysis(result);
+		}
+	});
+}
+
+// 얼굴 분석 함수
+function faceAnalysis(imgSaveName) {
+	var subscriptionKey = "${ms_azure_key}";
+	var uriBase = "https://ddit.cognitiveservices.azure.com/face/v1.0/detect";
+	var params = {"returnFaceId" : "true",
+				  "returnFaceLandmarks" : "false",
+				  "returnFaceAttributes" : "age,gender,headPose,smile,facialHair,glasses,emotion,hair,makeup,occlusion,accessories,blur,exposure,noise"};
+	$.ajax({
+		url : uriBase + "?" + $.param(params),
+		beforeSend : function(xhrObj) {
+			xhrObj.setRequestHeader("Content-Type", "application/json");
+			xhrObj.setRequestHeader("Ocp-Apim-Subscription-key", subscriptionKey);
+		},
+		
+		type : "post",
+		data : '{"url": ' + '"' + 'http://1.212.157.149/AIIMTFaces/' + imgSaveName + '"}',
+	}).done(function(data){
+		if (data.length > 1) { // 다수의 얼굴이 잡혔을때
+			camTestResult = 2;
+		} else if (data.length == 0) { // 얼굴이 잡히지 않았을때
+			camTestResult = 0;
+		} else { // 한사람의 얼굴만 잡혔을때
+			resistedFaceFileName = imgSaveName;
+			camTestResult = 1;
+		}
+	}).fail(function(jqXHR, textStatus, errorThrown){
+		var errorString = (errorThrown === "") ? "Error. " : errorThrown + " (" + jqXHR.status + "): ";
+		errorString += (jqXHR.responseText === "") ? "" : (jQuery.parseJSON(jqXHR.responseText).message) ? jQuery.parseJSON(jqXHR.responseText).message : jQuery.parseJSON(jqXHR.responseText).error.message;
+		alert("얼굴 분석 도중 에러가 발생했습니다 에러코드 : " + errorString);
+	});
+	
+}
+
+</script>
+</head>
+<body onBeforeUnload="studyUpdateClose()">
+	<div style="clear: both;">
+		<div style="float:left; width: 50%; height: 100%;">
+			<div class="content_div_wrapper" style="margin: 20px;">
+				<div>
+					<h3 class="title" style="display: inline-block;">Video</h3>
+					<button class="device_active_btn" id="mic_btn">MIC
+						<img src="${pageContext.request.contextPath }/images/on.png" class="btn_icon">
+					</button>
+					<button class="device_active_btn" id="cam_btn" style="margin-right: 10px;">CAM
+						<img src="${pageContext.request.contextPath }/images/on.png" class="btn_icon">
+					</button>
+				</div>
+				<div class="content_div" style="height: 640px; margin-bottom: 10px;">
+					<video id="webcam" width="920px" height="500px"></video>
+					<div id="myProgress">
+						<div id="myBar"></div>
+					</div>
+					<div class="content_div" style="height: 186px;">
+						<textarea rows="1" cols="80" id="message" style="text-align: center;">안녕하세요! [inAIR]입니다.</textarea>
+					</div>
+				</div>
+				<div class="content_div" style="height: 210px; background-color: #1d213c; clear: both;">
+					<div style="display: inline-block; width: 455px;">
+						<h3 class="title">Voice Graph</h3>
+						<canvas class="visualizer" style="width: 455px; height: 150px;"></canvas> 
+					</div>
+					<div style="display: inline-block; width: 455px;">
+						<h3 class="title">Voice Analysis</h3>
+						<div id="donutchart" style="width: 457px; height: 150px; display: inline-block;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="float: right; width: 50%; height: 100%;">
+			<div class="content_div_wrapper">
+				<div class="wrapper_content_barchart_result">
+					<h3 class="title" style="display: inline-block;">Voice Analysis</h3>
+					<img src="${pageContext.request.contextPath }/images/barchart.png" id="barchart_icon" style="width: 32px; height: 32px; float: right;">
+					<div class="content_div barchart_result" style="height: auto; margin-bottom: 10px;">
+						<b class="voice_element">차분</b><b class="percentage" id="voice_calm_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="voice_calm"></div>
+						</div>
+						<b class="voice_element">분노</b><b class="percentage" id="voice_anger_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="voice_anger"></div>
+						</div>
+						<b class="voice_element">행복</b><b class="percentage" id="voice_happiness_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="voice_happiness"></div>
+						</div>
+						<b class="voice_element">슬픔</b><b class="percentage" id="voice_sadness_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="voice_sadness"></div>
+						</div>
+						<b class="voice_element">활기</b><b class="percentage" id="voice_vitality_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="voice_vitality"></div>
+						</div>
+					</div>
+					
+					<h3 class="title" style="margin-top: 100px;">Face Analysis</h3>
+					<div class="content_div barchart_result" style="height: auto; margin-bottom: 10px;">
+						<b class="face_element">분노</b><b class="percentage" id="face_anger_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="face_anger"></div>
+						</div>
+						<b class="face_element">경멸</b><b class="percentage" id="face_contempt_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="face_contempt"></div>
+						</div>
+						<b class="face_element">혐오</b><b class="percentage" id="face_disgust_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="face_disgust"></div>
+						</div>
+						<b class="face_element">공포</b><b class="percentage" id="face_fear_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="face_fear"></div>
+						</div>
+						<b class="face_element">행복</b><b class="percentage" id="face_happiness_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="face_happiness"></div>
+						</div>
+						<b class="face_element">중립</b><b class="percentage" id="face_neutral_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="face_neutral"></div>
+						</div>
+						<b class="face_element">슬픔</b><b class="percentage" id="face_sadness_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="face_sadness"></div>
+						</div>
+						<b class="face_element">놀람</b><b class="percentage" id="face_surpsise_percent"></b>
+						<div class="analysisProgress">
+							<div class="analysisBar" id="face_surpsise"></div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="wrapper_content_radarchart_result" style="display: none;">
+					<div>
+						<h3 class="title" style="display: inline-block;">Voice Analysis</h3>
+						<h3 class="title" style="display: inline-block; margin-left: 345px;">Face Analysis</h3>
+						<img src="${pageContext.request.contextPath }/images/radarchart.png" id="radarchart_icon" style="width: 32px; height: 32px; float: right;">
+					</div>
+					<div style="display: inline-block; width: 450px; height: 450px; margin-right: 14px; background-color: black;">
+						<canvas id="voice_radarchart" width="450px" height="450px"></canvas>
+					</div>
+					<div style="display: inline-block; width: 450px; height: 450px; background-color: black;">
+						<canvas id="face_radarchart" width="450px" height="450px"></canvas>
+					</div>
+					
+					<h3 class="title">Word Cloud</h3>
+					<div id="word_cloud" style="background-color: black; width: 920px; height: 345px;">
+						
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<input type="hidden" id="sttResult" value="">
+	<canvas id="cam_capture_image"></canvas>
+	<canvas id="face_regist" style="display: none;"></canvas>
+</body>
+</html> 

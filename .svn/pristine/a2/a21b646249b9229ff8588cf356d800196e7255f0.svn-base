@@ -1,0 +1,251 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+	.informationBtn{ 
+		line-height:90px;
+ 		width:25%; float:right; 
+ 		text-align:center;
+ 		color:#fdab44;
+ 		border-radius:6px;
+/*  		border: 1px solid #ccc !important; */
+ 		font-size:25px !important;
+ 	} 
+ 	.informationBtn:hover{ 
+ 		background-color:#fdab44 !important; 
+ 		color:#fff !important; 
+ 	} 
+ 	.iconStyle{
+ 		float:left;
+ 		font-size:40px;
+ 		color:red;
+ 	}
+ 	.divStyle{
+ 		clear:both; margin-left:5%;
+ 	}
+ 	.tableStyle{
+ 		clear:both; font-size:18px; margin-left:4%;
+ 	}
+ 	.joWlfareTableStyle{
+ 		clear:both; font-size:18px; margin-left:4%;
+ 	}
+ 	.joCnTableStyle{
+ 		clear:both; font-size:18px; margin-left:4%;
+ 	}
+ 	.firstStyle{
+ 		vertical-align:text-top;
+ 	}
+ 	.joWlfareFirstTdStyle{
+ 		vertical-align:text-top;
+ 		width:12%;
+ 		font-weight:bold;
+ 	}
+ 	.joCnFirstTdStyle{
+ 		vertical-align:text-top;
+ 		width:10%;
+ 		font-weight:bold;
+ 	}
+ 	.secondStyle{
+ 		padding-left:2%;
+	    width:91% !important;
+ 	}
+ 	.joWlfareSecondTdStyle{
+ 		padding-left:2%;
+	    width:91% !important;
+ 	}
+ 	.joCnSecondTdStyle{
+ 		padding-left:2%;
+	    width:91% !important;
+ 	}
+ 	.marginTop{
+ 		margin-top:5%;
+ 	}
+ 	.companyTable{
+ 		margin-top:4%; font-size:17px;
+ 	}
+</style>
+</head>
+<body>
+	<section class="ftco-section bg-light">
+		<div class="container">
+			<div class="col-md-13 order-md-last d-flex" style="clear:both; margin-bottom:4%;">
+				<div class="bg-white p-5 contact-form" style="width:100%; text-align:left;">
+	            	<h1 style="line-height:90px; float:left; margin-bottom:3%;">${jobOfferInfo.jo_sj}</h1>
+	            	<a href="job-post.html" class="informationBtn" ><strong>즉시 지원</strong></a>
+	            	<div class="divStyle marginTop">
+	            		<label class="icon-check-square-o iconStyle" style="float:left;"></label>
+	            		<h3 style="float:left;">모집부분 및 자격요건</h3>
+	            		<c:forEach items="${jobOfferInfo.recruitmentFieldList}" var="recruitmentFieldInfo">
+		            		<table class="tableStyle">
+		            			<tbody>
+		            				<tr>
+		            					<td class="firstStyle"><b>모집분야</b></td>
+		            					<td class="secondStyle">${recruitmentFieldInfo.recruitment_field_name}</td>
+		            				</tr>
+		            				<tr>
+		            					<td class="firstStyle"><b>모집인원</b></td>
+		            					<td class="secondStyle">${recruitmentFieldInfo.recruitment_field_personnel}명</td>
+		            				</tr>
+		            				<tr>
+		            					<td rowspan="2" class="firstStyle"><b>자격요건</b></td>
+		            					<td class="secondStyle">${recruitmentFieldInfo.recruitment_field_career}</td>
+		            				</tr>
+		            				<tr>
+		            					<td class="secondStyle">${recruitmentFieldInfo.clsfString}</td>
+		            				</tr>
+		            				<tr>
+		            					<td class="firstStyle"><b>담당업무</b></td>
+		            					<td class="secondStyle">${recruitmentFieldInfo.recruitment_field_job}</td>
+		            				</tr>
+		            				<c:if test="${!empty recruitmentFieldInfo.recruitment_field_department}">
+		            					<tr>
+			            					<td class="firstStyle"><b>근무부서</b></td>
+			            					<td class="secondStyle">${recruitmentFieldInfo.recruitment_field_department}</td>
+		            					</tr>
+		            				</c:if>
+		            			</tbody>
+		            		</table>
+	            		</c:forEach>
+	            	</div>
+	            	<div class="divStyle marginTop">
+	            		<label class="icon-check-square-o iconStyle" style="float:left;"></label>
+	            		<h3 style="float:left;">지원자격</h3>
+	            		<table class="tableStyle">
+	            			<tbody>
+	            				<tr>
+	            					<td class="firstStyle"><b>학력</b></td>
+	            					<td class="secondStyle">${jobOfferInfo.finAcdmcrString}</td>
+	            				</tr>
+	            			</tbody>
+	            		</table>
+	            	</div>
+	            	<div class="divStyle marginTop">
+	            		<label class="icon-check-square-o iconStyle" style="float:left;"></label>
+	            		<h3 style="float:left;">접수기간</h3>
+	            		<table class="tableStyle">
+	            			<tbody>
+	            				<tr>
+	            					<td class="firstStyle"><b>접수기간</b></td>
+	            					<td class="secondStyle">${jobOfferInfo.jo_rgsde} ~ ${jobOfferInfo.jo_clos}</td>
+	            				</tr>
+	            			</tbody>
+	            		</table>
+	            	</div>
+	            	<div class="divStyle marginTop">
+	            		<label class="icon-check-square-o iconStyle" style="float:left;"></label>
+	            		<h3 style="float:left;">담당자 정보</h3>
+	            		<table class="tableStyle">
+	            			<tbody>
+	            				<tr>
+	            					<td class="firstStyle" style="width:20%;"><b>담당자 이름</b></td>
+	            					<td class="secondStyle">${jobOfferInfo.jo_manager_name}</td>
+	            				</tr>
+	            				<c:if test="${!empty jobOfferInfo.jo_manager_tel}">
+	            					<tr>
+		            					<td class="firstStyle"><b>담당자 연락처</b></td>
+		            					<td class="secondStyle">${jobOfferInfo.jo_manager_tel}</td>
+	            					</tr>
+	            				</c:if>
+	            				<c:if test="${!empty jobOfferInfo.jo_manager_mail}">
+	            					<tr>
+		            					<td class="firstStyle"><b>담당자 이메일</b></td>
+		            					<td class="secondStyle">${jobOfferInfo.jo_manager_mail}</td>
+	            					</tr>
+	            				</c:if>
+	            			</tbody>
+	            		</table>
+	            	</div>
+	            	<div class="divStyle marginTop">
+	            		<label class="icon-check-square-o iconStyle" style="float:left;"></label>
+	            		<h3 style="float:left;">근무조건 및 근무환경</h3>
+	            		<table class="tableStyle">
+	            			<tbody>
+	            				<tr>
+	            					<td class="firstStyle"><b>급여</b></td>
+	            					<td class="secondStyle">${jobOfferInfo.salaryString}</td>
+	            				</tr>
+	            				<tr>
+	            					<td class="firstStyle"><b>고용형태</b></td>
+	            					<td class="secondStyle">${jobOfferInfo.emplymString}</td>
+	            				</tr>
+	            				<tr>
+	            					<td class="firstStyle"><b>근무 요일</b></td>
+	            					<td class="secondStyle">${jobOfferInfo.jo_work_day}</td>
+	            				</tr>
+	            				<tr>
+	            					<td class="firstStyle"><b>근무 시간</b></td>
+	            					<td class="secondStyle">${jobOfferInfo.jo_work_time}</td>
+	            				</tr>
+	            				<tr>
+	            					<td class="firstStyle"><b>근무지</b></td>
+	            					<td class="secondStyle">${jobOfferInfo.jo_adres1} ${jobOfferInfo.jo_adres2}</td>
+	            				</tr>
+	            			</tbody>
+	            		</table>
+	            	</div>
+	            	<div class="divStyle marginTop">
+	            		<label class="icon-check-square-o iconStyle" style="float:left;"></label>
+	            		<h3 style="float:left;">복리후생</h3>
+	            		${jobOfferInfo.jo_wlfare}
+	            	</div>
+	            	<div class="divStyle marginTop">
+	            		<label class="icon-check-square-o iconStyle" style="float:left;"></label>
+	            		<h3 style="float:left;">기타참고사항</h3>
+	            		${jobOfferInfo.jo_cn}
+	            	</div>
+	            	<div class="divStyle marginTop">
+	            		<label class="icon-check-square-o iconStyle" style="float:left;"></label>
+	            		<h3 style="float:left;">지원자 통계</h3>
+	            	</div>
+	            	<div class="divStyle marginTop">
+	            		<c:set var="companyInfo" value="${companyMemVo.companyVo}"></c:set>
+	            		<label class="icon-check-square-o iconStyle" style="float:left;"></label>
+	            		<h3 style="float:left;">기업정보</h3>
+	            		<table class="table companyTable">
+							<tbody>
+								<tr>
+									<td rowspan="7" style="width:39%; text-align:center; padding-top:3%;">
+										<c:if test="${!empty comProfileInfo}">
+											<img src="/files/${comProfileInfo.com_file_savename }" alt="기업프로필사진" style="width:235px; height:165px;">
+										</c:if>
+									</td>
+									<td colspan="2"><b>${companyInfo.corp_name}</b></td>
+								</tr>
+								<tr>
+									<td>대표자 명</td>
+									<td>${companyInfo.ceo_nm}</td>
+								</tr>
+								<tr>
+									<td>대표 전화</td>
+									<td>${companyInfo.phn_no}</td>
+								</tr>
+								<tr>
+									<td>업종</td>
+									<td>${companyMemVo.upinduty_name} ${companyMemVo.lwinduty_name}</td>
+								</tr>
+								<tr>
+									<td>매출액</td>
+									<td>${companyMemVo.com_selng}원</td>
+								</tr>
+								<tr>
+									<td>홈페이지</td>
+									<td>${companyInfo.hm_url}</td>
+								</tr>
+								<tr>
+									<td>기업주소</td>
+									<td>${companyInfo.adres}</td>
+								</tr>
+							</tbody>
+						</table>
+	            	</div>
+	            </div>
+        	</div>
+		</div>
+	</section>
+</body>
+</html>

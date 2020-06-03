@@ -1,0 +1,12 @@
+package kr.or.inair.companymember.comsecession.service;
+import kr.or.inair.companymember.comsecession.dao.ICompanyMEMCOMDropDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMEMCOMDropServiceImpl implements ICompanyMEMCOMDropService {
+	@Autowired
+	private ICompanyMEMCOMDropDao comSecessionDao;
+
+}

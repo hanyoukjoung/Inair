@@ -1,0 +1,5 @@
+package kr.or.inair.companymember.aimovie.service;
+
+public interface ICompanyMEMAIMovieService {
+
+}

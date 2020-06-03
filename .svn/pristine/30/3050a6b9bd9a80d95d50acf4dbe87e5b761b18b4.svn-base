@@ -1,0 +1,62 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+var corpName = false;
+
+$(function() {
+	$('#corp_name').keyup(function() {
+		if($('#corp_name').val().trim() != ""){
+			$.ajax({
+				url : "/companySearch/searchCompany.do"
+				,data : {"corp_name" : $('#corp_name').val()}
+				,dataType : "json"
+				,type : "post"
+				,error : function(result) {
+							alert(result.status);
+						}
+				,success : function(result) {
+							if(result[0].resultFlag == "true") {
+								corpName = true;
+								$('#resultDiv').empty();
+								var list = "";
+								
+								$.each(result, function(index, item) {
+									if(index > 0) {
+										list += "<p>" + item.corp_name + "</p>";
+									}
+								});
+								
+								$('#resultDiv').append(list);
+								
+							} else {
+								corpName = false;
+								$('#resultDiv').empty();
+								
+								$('#resultDiv').append("<p>결과없음</p>");
+							}
+						}
+			})
+		}
+	})
+});
+</script>
+</head>
+<body>
+<h2>company Search</h2>
+<!-- action="/action_page.php" -->
+  <div class="autocomplete" style="width:300px;">
+    <input id="corp_name" type="text" name="myCountry" placeholder="Country">
+  </div>
+  
+  <div id="resultDiv"></div>
+  
+  <input type="submit">
+
+</body>
+</html>

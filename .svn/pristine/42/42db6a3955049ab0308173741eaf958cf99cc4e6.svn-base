@@ -1,0 +1,34 @@
+package kr.or.inair.individualmember.joboffer.dao;
+
+import java.util.List;
+
+import kr.or.inair.vo.Job_OfferVO;
+
+public interface IJobOfferDao {
+
+	/**
+	 * 구인게시판에 등록된 글수를 반환하는 메서드
+	 * @return 구인게시판 글수
+	 * @author 우영래
+	 * @since 2020-05-09
+	 */
+	int getJobListCount() throws Exception ;
+
+	/**
+	 * 구인공고글을 insert 하고 구인공고 번호(jo_num)를 반환하는 메서드 
+	 * @param insertJobOffer
+	 * @return
+	 * @throws Exception
+	 */
+	String insertjobOffer(Job_OfferVO insertJobOffer) throws Exception;
+
+	/**
+	 * 기업회원 아이디를 매개변수로 전달받아 해당 회원이 작성한 구인공고 리스트를 반환하는 메서드 
+	 * @param com_id
+	 * @return List<Job_OfferVO>
+	 * @throws Exception
+	 * @since 2020-05-20
+	 * @author JSM
+	 */
+	List<Job_OfferVO> getJobOfferList(String com_id) throws Exception;
+}

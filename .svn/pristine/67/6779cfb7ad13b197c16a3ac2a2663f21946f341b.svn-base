@@ -1,0 +1,5 @@
+package kr.or.inair.companymember.work.dao;
+
+public interface ICompanyMEMWorkDao {
+
+}

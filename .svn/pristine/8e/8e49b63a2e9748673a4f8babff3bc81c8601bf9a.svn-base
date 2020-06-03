@@ -1,0 +1,11 @@
+package kr.or.inair.admin.uppro.dao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+@Repository
+public class IAdminUpPRODaoImpl implements IAdminUpPRODao {
+	@Autowired
+	private SqlMapClient client;
+
+}

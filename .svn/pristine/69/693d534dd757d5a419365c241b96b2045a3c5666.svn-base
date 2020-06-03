@@ -1,0 +1,5 @@
+package kr.or.inair.admin.lowindustry.service;
+
+public interface IAdminLowIndustryService {
+
+}

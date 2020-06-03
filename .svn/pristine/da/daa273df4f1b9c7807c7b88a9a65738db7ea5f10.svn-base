@@ -1,0 +1,5 @@
+package kr.or.inair.companymember.lowindustry.dao;
+
+public interface ICompanyMEMLowIndustryDao {
+
+}

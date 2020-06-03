@@ -1,0 +1,12 @@
+package kr.or.inair.companymember.joboffersubmit.service;
+import kr.or.inair.companymember.joboffersubmit.dao.ICompanyMEMJOSubmitDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMEMJOSubmitServiceImpl implements ICompanyMEMJOSubmitService {
+	@Autowired
+	private ICompanyMEMJOSubmitDao jobOfferSubmitDao;
+
+}

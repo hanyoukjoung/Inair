@@ -1,0 +1,12 @@
+package kr.or.inair.companymember.jobofferfile.service;
+import kr.or.inair.companymember.jobofferfile.dao.ICompanyMEMJobOfferFileDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMEMJobOfferFileServiceImpl implements ICompanyMEMJobOfferFileService {
+	@Autowired
+	private ICompanyMEMJobOfferFileDao jobOfferFileDao;
+
+}

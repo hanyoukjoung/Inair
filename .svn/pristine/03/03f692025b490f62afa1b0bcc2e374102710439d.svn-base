@@ -1,0 +1,5 @@
+package kr.or.inair.admin.uppro.service;
+
+public interface IAdminUpPROService {
+
+}

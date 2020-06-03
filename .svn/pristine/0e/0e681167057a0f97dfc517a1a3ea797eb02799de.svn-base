@@ -1,0 +1,13 @@
+package kr.or.inair.admin.classofposition.dao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+@Repository
+public class IAdminClassOfPositionDaoImpl implements IAdminClassOfPositionDao {
+	@Autowired
+	private SqlMapClient client;
+
+}

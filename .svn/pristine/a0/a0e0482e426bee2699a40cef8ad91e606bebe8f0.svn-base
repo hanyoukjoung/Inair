@@ -1,0 +1,12 @@
+package kr.or.inair.admin.uppro.service;
+import kr.or.inair.admin.uppro.dao.IAdminUpPRODao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IAdminUpPROServiceImpl implements IAdminUpPROService {
+	@Autowired
+	private IAdminUpPRODao upProfessionDao;
+
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="salary">
+	<typeAlias alias="salaryVO" type="kr.or.inair.vo.SalaryVO"/>
+	
+	<statement id="selectSalaryScope" resultClass="String">
+		SELECT SALARY_SCOPE 
+		FROM   SALARY 
+		WHERE  SALARY_NUM = #salary_num#
+	</statement>
+	
+	<select id="getSalaryList" resultClass="salaryVO">
+		SELECT * 
+		FROM   SALARY 
+		WHERE  SALARY_CONDITON = '1'  
+	</select>
+	
+</sqlMap> 

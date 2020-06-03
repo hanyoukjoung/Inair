@@ -1,0 +1,43 @@
+package kr.or.inair.controller.individualmember;
+
+import kr.or.inair.aiimitanswer.service.IAIIMITAnswerService;
+import kr.or.inair.aiimitface.service.IAIIMITFaceService;
+import kr.or.inair.aiimitlist.service.IAIIMITListService;
+import kr.or.inair.aiimitmovie.service.IAIIMITMovieService;
+import kr.or.inair.aiimitquest.service.IAIIMITQUESTService;
+import kr.or.inair.aiimitresult.service.IAIIMITResultService;
+import kr.or.inair.aiimitvoice.service.IAIIMITVoiceService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@RequestMapping("/AIIMT/")
+@Controller
+public class IndividualMemberAIIMTController {
+	
+	@Autowired
+	private IAIIMITListService aiIMITListService;
+	@Autowired
+	private IAIIMITMovieService aiIMITMovieService;
+	@Autowired
+	private IAIIMITQUESTService aiIMITQuestionService;
+	@Autowired
+	private IAIIMITAnswerService aiIMITAnswerService;
+	@Autowired
+	private IAIIMITFaceService aiIMITFaceService;
+	@Autowired
+	private IAIIMITVoiceService aiIMITVoiceService;
+	@Autowired
+	private IAIIMITResultService aiIMITResultService;
+	
+	@RequestMapping("AIIMTHome")
+	public String AIIMTHome() throws Exception {
+		return "AIIMT/indvdlMember/AIIMTHome";
+	}
+	
+	@RequestMapping("AIIMTPrepareForm")
+	public String AIIMTPrepare() throws Exception {
+		return "indvdlMember/AIIMTForm";
+	}
+}

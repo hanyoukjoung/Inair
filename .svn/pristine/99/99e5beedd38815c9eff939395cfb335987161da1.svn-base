@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="indvdlmem">
+	<typeAlias alias="INDVDLMEMVO" type="kr.or.inair.vo.INDVDLMEMVO"/>
+	
+	<resultMap id="individualMemberMap" class="INDVDLMEMVO">
+		<result property="indvdl_id" column="indvdl_id"/>
+		<result property="indvdl_pass" column="indvdl_pass"/>
+		<result property="indvdl_name" column="indvdl_name"/>
+		<result property="indvdl_bir" column="indvdl_bir"/>
+		<result property="indvdl_tel" column="indvdl_tel"/>
+		<result property="indvdl_mail" column="indvdl_mail"/>
+		<result property="indvdl_gend" column="indvdl_gend"/>
+		<result property="indvdl_adres1" column="indvdl_adres1"/>
+		<result property="indvdl_adres2" column="indvdl_adres2"/>
+		<result property="indvdl_delete" column="indvdl_delete"/>
+		<result property="mentoranswer_regist" column="mentoranswer_regist"/>
+		<result property="enterreview_possible_date" column="enterreview_possible_date"/>
+		<result property="fin_acdmcr_num" column="fin_acdmcr_num"/>
+		<result property="hopepro_num" column="hopepro_num"/>
+		<result property="indvdl_secsn" column="indvdl_secsn"/>
+		<result property="indvdl_social" column="indvdl_social"/>
+		<result property="pictures" column="indvdl_id" select="idPicture.idPictureList"/>
+	</resultMap>
+	
+	<sql id="selectAll">
+		SELECT * 
+			FROM INDVDLMEM
+		WHERE INDVDL_DELETE = 'N'
+	</sql>
+	
+	<sql id="searchCondition">
+		<dynamic prepend="and">
+			<isNotEmpty property="search_indvdl_id" prepend="and">
+				INDVDL_ID LIKE '%' || #search_indvdl_id# || '%'
+			</isNotEmpty>
+			<isNotEmpty property="search_indvdl_name" prepend="and">
+				INDVDL_NAME LIKE '%' || #search_indvdl_name# || '%' 
+			</isNotEmpty>
+			<isNotEmpty property="search_indvdl_mail" prepend="and">
+				INDVDL_MAIL LIKE '%' || #search_indvdl_mail# || '%' 
+			</isNotEmpty>
+			<isNotEmpty property="search_gender" prepend="and">
+				INDVDL_GEND = #search_gender# 
+			</isNotEmpty>
+			<isNotEmpty property="search_indvdl_adres1_1" prepend="and">
+				INDVDL_ADRES1 LIKE '%' || #search_indvdl_adres1_1# || '%' 
+			</isNotEmpty>
+			<isNotEmpty property="search_indvdl_adres1_2" prepend="and">
+				INDVDL_ADRES1 LIKE '%' || #search_indvdl_adres1_2# || '%' 
+			</isNotEmpty>
+			<isNotEmpty property="search_fin_acdmcr_num" prepend="and">
+				FIN_ACDMCR_NUM = #search_fin_acdmcr_num# 
+			</isNotEmpty>
+			<isNotEmpty property="search_hopepro_num" prepend="and">
+				HOPEPRO_NUM = #search_hopepro_num# 
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+
+	<select id="indvdlmemInfo" parameterClass="map" resultMap="individualMemberMap">
+		<include refid="selectAll"/>
+		 	<dynamic>
+		 		<isNotEmpty property="indvdl_id" prepend="AND">
+		 			INDVDL_ID = #indvdl_id#
+		 		</isNotEmpty>
+		 		<isNotEmpty property="indvdl_pass" prepend="AND">
+		 			INDVDL_PASS = #indvdl_pass#
+		 		</isNotEmpty>
+		 		<isNotEmpty property="indvdl_mail" prepend="AND">
+		 			INDVDL_MAIL = #indvdl_mail#
+		 		</isNotEmpty>
+		 	</dynamic>
+	</select>
+	
+	<select id="searchid" parameterClass="map" resultClass="INDVDLMEMVO">
+		<include refid="selectAll"/>
+			AND INDVDL_NAME = #indvdl_name#
+			AND INDVDL_MAIL = #indvdl_mail#
+	</select>
+	
+	<select id="searchpass" parameterClass="map" resultClass="INDVDLMEMVO">
+		<include refid="selectAll"/>
+		AND INDVDL_ID = #indvdl_id#
+		AND INDVDL_MAIL= #indvdl_mail#
+	</select>
+	
+ 	<update id="updatePassword" parameterClass="map">
+ 		UPDATE INDVDLMEM 
+ 			SET INDVDL_PASS = #indvdl_pass# 
+ 		WHERE INDVDL_ID = #indvdl_id# 
+	</update> 
+
+	<insert id="insertIndvdlMember" parameterClass="INDVDLMEMVO">
+		INSERT INTO INDVDLMEM VALUES(
+								     #indvdl_id#, 
+								     #indvdl_pass#,
+								     #indvdl_name#, 
+								     #indvdl_bir#, 
+								     #indvdl_tel#, 
+								     #indvdl_mail#, 
+								     #indvdl_gend#, 
+								     #indvdl_adres1#, 
+								     #indvdl_adres2#, 
+								     'N', 
+								     0, 
+								     to_char(add_months(sysdate, 1), 'YYYY/MM/DD'), 
+								     #fin_acdmcr_num#, 
+								     #hopepro_num#, 
+								     null,
+								     #indvdl_social#)
+	</insert>
+
+	<select id="duplCheck" parameterClass="Map" resultClass="INDVDLMEMVO">
+		SELECT * FROM INDVDLMEM
+		<dynamic>
+			<isNotEmpty property="indvdl_mail" prepend="WHERE">
+				INDVDL_MAIL = #indvdl_mail#
+			</isNotEmpty>
+			<isNotEmpty property="indvdl_id" prepend="WHERE">
+				INDVDL_ID = #indvdl_id#
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getIndvdlMemCount" resultClass="int">
+		SELECT COUNT(*) FROM INDVDLMEM WHERE INDVDL_DELETE = 'N'
+	</select>
+	
+	<update id="updateIndivdualMember" parameterClass="INDVDLMEMVO">
+		update indvdlmem
+		   set indvdl_name = #indvdl_name#
+			   ,indvdl_bir = #indvdl_bir#
+			   ,indvdl_tel = #indvdl_tel#
+			   ,indvdl_mail = #indvdl_mail#
+			   ,indvdl_gend = #indvdl_gend#
+			   ,indvdl_adres1 = #indvdl_adres1#
+			   ,indvdl_adres2 = #indvdl_adres2#
+		where indvdl_id = #indvdl_id#
+	</update>
+	
+	<select id="adminGetINDVDLMemList" parameterClass="Map" resultClass="INDVDLMEMVO">
+		SELECT B.*
+		FROM   (SELECT ROWNUM RNUM, A.*
+		  		FROM   (SELECT *
+		  		        FROM   INDVDLMEM 
+		  		        WHERE  INDVDL_DELETE = 'N' 
+		  		        <include refid="searchCondition"/>
+		  		        ORDER  BY INDVDL_NAME) A)B
+		<![CDATA[
+		WHERE  B.RNUM >= #startCount#
+		AND    B.RNUM <= #endCount#
+		]]>  		        
+	</select>
+	
+	<select id="adminGetDeleteINDVDLMemList" parameterClass="Map" resultClass="INDVDLMEMVO">
+		SELECT B.*
+		FROM   (SELECT ROWNUM RNUM, A.*
+		  		FROM   (SELECT *
+		  		        FROM   INDVDLMEM 
+		  		        WHERE  INDVDL_DELETE = 'Y' 
+		  		        <include refid="searchCondition"/>
+		  		        ORDER  BY INDVDL_NAME) A)B
+		<![CDATA[
+		WHERE  B.RNUM >= #startCount#
+		AND    B.RNUM <= #endCount#
+		]]>  		        
+	</select>
+	
+	<select id="indivdlInfo" parameterClass="map" resultMap="individualMemberMap">
+		<include refid="selectAll"/>
+		and indvdl_id = #indvdl_id#
+		 or indvdl_mail = #indvdl_mail#
+		 or indvdl_tel = #indvdl_tel#
+	</select>
+	
+	<select id="getTotalCount" parameterClass="Map" resultClass="String">
+		SELECT COUNT(INDVDL_ID) 
+		FROM   INDVDLMEM 
+		WHERE  INDVDL_DELETE = 'N'
+		<include refid="searchCondition"/>
+	</select>
+	
+	<select id="getDeleteINDVDLMEMTotalCount" parameterClass="Map" resultClass="String">
+		SELECT COUNT(INDVDL_ID) 
+		FROM   INDVDLMEM 
+		WHERE  INDVDL_DELETE = 'Y' 
+		<include refid="searchCondition"/>
+	</select>
+	
+	<update id="passwordChange" parameterClass="map">
+		update indvdlmem
+		   set indvdl_pass = #indvdl_pass#
+		 where indvdl_id = #indvdl_id#
+	</update>
+	
+	<select id="adminGetINDVDLMEMInfo" parameterClass="String" resultClass="INDVDLMEMVO">
+		SELECT A.INDVDL_ID,
+		       A.INDVDL_NAME,
+		       A.INDVDL_BIR,
+		       A.INDVDL_TEL,
+		       A.INDVDL_MAIL,
+		       A.INDVDL_GEND,
+		       A.INDVDL_ADRES1,
+		       A.INDVDL_ADRES2,
+		       B.FIN_ACDMCR AS FIN_ACDMCR_STRING,
+		       C.LOWPRO_NAME AS HOPEPRO_STRING
+		FROM   INDVDLMEM A, 
+		       FINAL_ACADEMIC B, 
+		       LOWPRO C
+		WHERE  INDVDL_ID = #indvdl_id#
+		AND    A.FIN_ACDMCR_NUM = B.FIN_ACDMCR_NUM 
+		AND    A.HOPEPRO_NUM = C.LOWPRO_NUM
+	</select>
+	
+	<update id="deleteIndvdlMem" parameterClass="Map">
+		update indvdlmem
+		   set indvdl_delete = 'Y',
+		       indvdl_secsn = #indvdl_secsn#
+		 where indvdl_id = #indvdl_id#
+	</update>
+	
+	<select id="individualMember" parameterClass="String" resultMap="individualMemberMap">
+		select *
+		  from indvdlmem
+		 where indvdl_id = #indvdl_id#
+	</select>
+	
+	<select id="getLoginINDVDLMEMInfo" parameterClass="String" resultClass="INDVDLMEMVO">
+		SELECT * 
+		FROM   indvdlmem
+		WHERE  indvdl_id = #indvdl_id#
+	</select>
+</sqlMap> 

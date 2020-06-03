@@ -1,0 +1,12 @@
+package kr.or.inair.individualmember.ailist.service;
+import kr.or.inair.individualmember.ailist.dao.IAIListDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IAIListServiceImpl implements IAIListService {
+	@Autowired
+	private IAIListDao aiDetailDao;
+
+}

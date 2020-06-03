@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="joSubmit">
+	<typeAlias alias="joSubmitVO" type="kr.or.inair.vo.Jo_SubmitVO"/>
+	
+	<resultMap class="joSubmitVO" id="joSubmitMap">
+		<result property="submit_num" column="submit_num"/>
+		<result property="jo_num" column="jo_num"/>
+		<result property="resume_num" column="resume_num"/>
+		<result property="pass_at" column="pass_at"/>
+		<result property="pass_date" column="pass_date"/>
+		<result property="ai_posbl" column="ai_posbl"/>
+		<result property="ai_execut" column="ai_execut"/>
+		<result property="resumeInfo" column="resume_num" select="resume.getResumeInfo"/>
+	</resultMap>
+	
+	<insert id="insertJoSubmit" parameterClass="Map">
+		INSERT INTO JO_SUBMIT(SUBMIT_NUM
+							 ,JO_NUM
+							 ,RESUME_NUM)
+		VALUES(SEQ_JO_SUBMIT.NEXTVAL
+			  ,#jo_num#
+			  ,#resume_num#)
+	</insert>
+	
+	<select id="getjoSubmitList" parameterClass="String" resultMap="joSubmitMap">
+		SELECT * 
+		FROM   JO_SUBMIT 
+		WHERE  JO_NUM = #jo_num#
+	</select>
+</sqlMap>

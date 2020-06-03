@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="classOfPosition">
+	<typeAlias alias="classOfPositionVO" type="kr.or.inair.vo.ClassOfPositionVO"/>
+	
+	<statement id="selectClsfName" resultClass="String">
+		SELECT CLSF_NAME 
+		FROM   CLASSOFPOSITION 
+		WHERE  CLSF_NUM = #clsf_num#
+	</statement>
+	
+	<select id="getClassOfPositionList" resultClass="classOfPositionVO">
+		SELECT * 
+		FROM   CLASSOFPOSITION 
+	</select>
+	
+</sqlMap> 

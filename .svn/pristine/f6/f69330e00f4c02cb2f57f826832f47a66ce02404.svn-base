@@ -1,0 +1,5 @@
+package kr.or.inair.admin.lowpro.dao;
+
+public interface IAdminLowPRODao {
+
+}

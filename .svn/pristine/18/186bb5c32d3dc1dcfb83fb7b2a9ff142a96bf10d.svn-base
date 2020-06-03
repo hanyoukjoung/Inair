@@ -1,0 +1,5 @@
+package kr.or.inair.companymember.aiface.service;
+
+public interface ICompanyMEMAIFaceService {
+
+}

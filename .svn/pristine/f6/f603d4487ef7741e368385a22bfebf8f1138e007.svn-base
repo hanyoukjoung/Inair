@@ -1,0 +1,12 @@
+package kr.or.inair.individualmember.aivoice.service;
+import kr.or.inair.individualmember.aivoice.dao.IAIVoiceDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IAIVoiceServiceImpl implements IAIVoiceService {
+	@Autowired
+	private IAIVoiceDao aiVoiceDao;
+
+}

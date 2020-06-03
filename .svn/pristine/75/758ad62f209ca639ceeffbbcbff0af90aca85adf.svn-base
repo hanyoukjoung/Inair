@@ -1,0 +1,11 @@
+package kr.or.inair.admin.lowindustry.dao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+@Repository
+public class IAdminLowIndustryDaoImpl implements IAdminLowIndustryDao {
+	@Autowired
+	private SqlMapClient client;
+
+}

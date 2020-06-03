@@ -1,0 +1,12 @@
+package kr.or.inair.review.service;
+import kr.or.inair.review.dao.IReviewDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IReviewServiceImpl implements IReviewService {
+	@Autowired
+	private IReviewDao reviewDao;
+
+}

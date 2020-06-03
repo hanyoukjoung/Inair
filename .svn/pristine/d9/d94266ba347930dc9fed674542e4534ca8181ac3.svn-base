@@ -1,0 +1,5 @@
+package kr.or.inair.admin.salary.dao;
+
+public interface IAdminSalaryDao {
+
+}

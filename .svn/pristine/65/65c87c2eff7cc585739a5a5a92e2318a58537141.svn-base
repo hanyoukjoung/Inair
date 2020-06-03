@@ -1,0 +1,12 @@
+package kr.or.inair.characterelement.service;
+import kr.or.inair.characterelement.dao.ICHARELEDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICHARELEServiceImpl implements ICHARELEService {
+	@Autowired
+	private ICHARELEDao characterElementDao;
+
+}

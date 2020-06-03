@@ -1,0 +1,12 @@
+package kr.or.inair.companymember.ailist.service;
+import kr.or.inair.companymember.ailist.dao.ICompanyMEMAIListDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMEMAIListServiceImpl implements ICompanyMEMAIListService {
+	@Autowired
+	private ICompanyMEMAIListDao aiDetailDao;
+
+}

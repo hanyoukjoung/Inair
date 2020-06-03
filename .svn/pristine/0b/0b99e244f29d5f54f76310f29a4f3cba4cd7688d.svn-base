@@ -1,0 +1,5 @@
+package kr.or.inair.review.dao;
+
+public interface IReviewDao {
+
+}

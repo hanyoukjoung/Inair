@@ -1,0 +1,14 @@
+package kr.or.inair.academicdata.service;
+
+import kr.or.inair.academicdata.dao.IAcademicDataDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+
+@Service
+public class IAcademicDataServiceImpl implements IAcademicDataService {
+
+	@Autowired
+	private IAcademicDataDao academicDetailDao;
+}

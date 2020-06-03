@@ -1,0 +1,399 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="charset=UTF-8">
+<title>AI 모의면접</title>
+<script type="text/javascript" src="${pageContext.request.contextPath }/js/annyang.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<style type="text/css">
+html{
+	background-color: #1d213c;
+	height: 950px;
+	width: 1920px;
+}
+
+body{
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+}
+
+#head{
+	height: 30px;
+}
+
+#myProgress {
+	margin-top: -5px;
+	width: 100%;
+	background-color: #8a8889;
+}
+
+#myBar {
+	width: 1%;
+	height: 5px;
+	background-color: #ff0000;
+}
+
+#webcam{
+	background-color: black;
+}
+
+#message{
+	font-size: 20px;
+	line-height: 140px;
+	color: white;
+	margin-left: 40px;
+}
+
+.device_active_btn{
+	position: relative; 
+	float: right; 
+	height: 30px; 
+	width: 50px; 
+	padding-bottom: 30px; 
+	font-size: 12px; 
+	border: none; 
+	background-color: #c8c8c8; 
+	font-weight: 900; 
+	margin-top: 10px;
+}
+
+.btn_icon{
+	 position: absolute; 
+	 top: 23px; 
+	 left: 18px;
+}
+
+.content_div{
+	background-color: black;
+}
+
+.content_div_wrapper{
+	margin: 20px; 
+	height: 910px;
+}
+
+.label_key{
+	color: white;
+}
+
+.label_value{
+	color: white;
+}
+
+.title{
+	color: white;
+}
+
+cavas{
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	margin-bottom: -3px;
+	display: inline-block;
+}
+
+</style>
+<script type="text/javascript">
+var i = 0;
+var stream;
+var video;
+var gainNode;
+
+$(function(){
+	init();
+	move();
+	
+	var startMessage = ["안녕하세요! inAIR입니다.",
+	                    "AI모의면접을 하기전에 몇가지 환경을 체크하겠습니다.",
+	                    "마이크 상태를 확인하겠습니다.",
+	                    "\"안녕하세요 만나서 반갑습니다\"를 천천히 또박또박 말씀해주세요."];
+	insertMessage(startMessage);
+	
+	var sttResult = '';
+	
+	// 웹캠 버튼 활성화 클릭 이벤트
+	$('#cam_btn').click(function(){
+		if($('#cam_btn img').attr('src') == '${pageContext.request.contextPath }/images/on.png'){ // 켜져있을때
+			video.src = "";
+			$('#cam_btn img').attr('src', '${pageContext.request.contextPath }/images/off.png');
+		} else { // 꺼져있을때
+			init();
+			$('#cam_btn img').attr('src', '${pageContext.request.contextPath }/images/on.png');
+		}
+	});
+	
+	// 마이크 버튼 활성화 클릭 이벤트
+	$('#mic_btn').click(function(){
+		if($('#mic_btn img').attr('src') == '${pageContext.request.contextPath }/images/on.png'){ // 켜져있을때
+			gainNode.gain.value = 0;
+			$('#mic_btn img').attr('src', '${pageContext.request.contextPath }/images/off.png');
+		} else { // 꺼져있을때
+			gainNode.gain.value = 1;
+			$('#mic_btn img').attr('src', '${pageContext.request.contextPath }/images/on.png');
+		}
+	});
+});
+
+// 화면에 웹캠화면 보여주는 함수 (asunc를 해야 동기화가 되어 try-catch에서 에러를 잡을 수 있다.)
+async function init() {
+	
+	var constraints = {
+			video : true
+		};
+	
+	try {
+		stream = await navigator.mediaDevices.getUserMedia(constraints);
+		handleSuccess(stream);
+	} catch (e) {
+		handleError(e);
+	}
+	audioGraph();
+}
+
+// 오디오 볼륨 그래프 생성 함수
+function audioGraph() {
+	var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+	var voiceSelect = "off";
+	var source;
+	
+	var analyser = audioCtx.createAnalyser();
+	analyser.minDecibels = -90;
+	analyser.maxDecibels = -10;
+	analyser.soomthingTimeContstant = 0.85;
+
+	var distortion = audioCtx.createWaveShaper();
+	gainNode = audioCtx.createGain();
+	var biquadFilter = audioCtx.createBiquadFilter();
+	var convolver = audioCtx.createConvolver();
+	
+	function makeDistortionCurve(amount) {
+		var k = typeof amount === 'number' ? amount : 50,
+			n_samples = 44100,
+			curve = new Float32Array(n_samples),
+			deg = Math.PI / 180,
+			i = 0,
+			x;
+		for ( ; i < n_samples; ++i ) {
+			x = i * 2 / n_samples - 1;
+			curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+		}
+		return curve;
+	};
+	
+	var soundSource;
+	
+	ajaxRequest = new XMLHttpRequest();
+	
+	ajaxRequest.open('GET', 'https://mdn.github.io/voice-change-o-matic/audio/concert-crowd.ogg', true);
+	
+	ajaxRequest.responseType = 'arraybuffer';
+	
+	ajaxRequest.onload = (function(){
+		var audioData = ajaxRequest.response;
+		
+		audioCtx.decodeAudioData(audioData, function(buffer){
+			soundSource = audioCtx.createBufferSource();
+			convolver.buffer = buffer;
+		}, function(e){ console.log("Error with decoding audio data" + e.err);});
+	});
+	
+	ajaxRequest.send();
+	
+	var canvas = document.querySelector('.visualizer');
+	var canvasCtx = canvas.getContext("2d");
+	
+	var intendedWidth = 640;
+	canvas.setAttribute('width', intendedWidth);
+	
+	var visualSelect = 'frequencybars';
+	
+	var drawVisual;
+	
+	if (navigator.mediaDevices.getUserMedia) {
+		var constraints = {audio: true};
+		navigator.mediaDevices.getUserMedia (constraints)
+			.then(
+				function(stream) {
+					source = audioCtx.createMediaStreamSource(stream);
+					source.connect(distortion);
+					distortion.connect(biquadFilter);
+					biquadFilter.connect(gainNode);
+					convolver.connect(gainNode);
+					gainNode.connect(analyser);
+					analyser.connect(audioCtx.destination);
+					
+					visualize();
+					voiceChange();
+				})
+		        .catch( function(err) { console.log('The following gUM error occured: ' + err);})
+	} else {
+		console.log('getUserMedia not supported on your browser!');
+	}
+	
+	function visualize() {
+		WIDTH = canvas.width;
+		HEIGHT = canvas.height;
+		
+		var visualSetting = visualSelect;
+		
+		if(visualSetting === "frequencybars") {
+			analyser.fftSize = 256;
+			var bufferLengthAlt = analyser.frequencyBinCount;
+			var dataArrayAlt = new Uint8Array(bufferLengthAlt);
+			
+			canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+			
+			var drawAlt = function() {
+				drawVisual = requestAnimationFrame(drawAlt);
+				
+				analyser.getByteFrequencyData(dataArrayAlt);
+				
+				canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+				canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+				
+				var barWidth = (WIDTH / bufferLengthAlt) * 2.5;
+				var barHeight;
+				var x = 0;
+				
+				for(var i = 0; i < bufferLengthAlt; i++) {
+					barHeight = dataArrayAlt[i];
+					
+					canvasCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
+					canvasCtx.fillRect(x,HEIGHT-barHeight/2,barWidth,barHeight/2);
+					
+					x += barWidth + 1;
+				}
+			};
+			
+			drawAlt();
+		}
+	}
+	
+	function voiceChange() {
+		distortion.oversample = '4x';
+		biquadFilter.gain.setTargetAtTime(0, audioCtx.currentTime, 0)
+		
+		var voiceSetting = voiceSelect.value;
+	}
+}
+
+// 면접질문내용 b태그에 텍스트 넣는 메서드
+function insertMessage(textArray) {
+	var i = 0;
+	var interval = setInterval(function(){
+		$('#message').text(textArray[i]);
+		$('#message').animate({opacity:"1"}, 3000);
+		
+		if(i != textArray.length-1) {
+			$('#message').animate({opacity:"0"}, 3000);
+		} else {
+			clearInterval(interval);
+		}
+		
+		i++;
+	}, 6000);
+}
+
+// 비디오 태그에 영상 재생하는 함수
+function handleSuccess(stream) {
+	video = document.querySelector('video');
+	
+	video.srcObject = stream;
+	video.play();
+}
+
+// 웹캠화면 try-catch 처리 함수
+function handleError(error){
+	if (error.name == 'ConstraintNotSatisfiedError') {
+		alert("웹캠 장치 환경이 적합하지 않습니다.");
+		studyUpdateClose();
+	} else if (error.name == 'PermissionDeniedError') {
+		alert("웹캠에 대한 액세스가 거부되었습니다.");
+		studyUpdateClose();
+	} else {
+		alert("장치가 올바르게 연결되어 있지 않거나 작동하지 않습니다.");
+		studyUpdateClose();
+	}
+}
+
+// ai면접 창 진행률 이동 함수
+function move() {
+  if (i == 0) {
+    i = 1;
+    var elem = document.getElementById("myBar");
+    var width = 1;
+    var id = setInterval(frame, 10);
+    function frame() {
+      if (width >= 1000) {
+        clearInterval(id);
+        i = 0;
+      } else {
+        width++;
+        elem.style.width = width/10 + "%";
+      }
+    }
+  }
+}
+
+// 부모창 새로고침
+function studyUpdateClose(){
+	opener.document.location.reload();
+}
+
+</script>
+</head>
+<body onBeforeUnload="studyUpdateClose()">
+<!-- 	<div id="head"> -->
+<!-- 		<div style="float: right;"> -->
+<!-- 			<button style="position: relative;" value="웹캠"></button> -->
+<%-- 			<img src="${pageContext.request.contextPath }/images/off.png" style="position: absolute;"> --%>
+<!-- 		</div> -->
+<!-- 	</div> -->
+	<div style="clear: both;">
+		<div style="float:left; width: 50%; height: 100%;">
+			<div class="content_div_wrapper" style="margin: 20px;">
+				<div>
+					<h3 class="title" style="display: inline-block;">Video</h3>
+					<button class="device_active_btn" id="mic_btn">MIC
+						<img src="${pageContext.request.contextPath }/images/on.png" class="btn_icon">
+					</button>
+					<button class="device_active_btn" id="cam_btn" style="margin-right: 10px;">CAM
+						<img src="${pageContext.request.contextPath }/images/on.png" class="btn_icon">
+					</button>
+				</div>
+				<div class="content_div" style="height: 640px; margin-bottom: 10px;">
+					<video id="webcam" width="920px" height="500px"></video>
+					<div id="myProgress">
+						<div id="myBar"></div>
+					</div>
+					<div class="content_div" style="height: 186px;">
+						<b id="message"></b>
+					</div>
+				</div>
+				<div class="content_div" style="height: 210px; background-color: #1d213c; clear: both;">
+					<div style="display: inline-block; width: 455px;">
+						<h3 class="title">Voice Graph</h3>
+						<canvas class="visualizer" style="width: 455px; height: 150px; border: 1px solid red;"></canvas> 
+					</div>
+					<div style="display: inline-block; width: 455px;">
+						<h3 class="title">Voice Analysis</h3>
+						<canvas style="width: 455px; height: 150px; border: 1px solid red;"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="float: right; width: 50%; height: 100%;">
+			<div class="content_div_wrapper">
+				<div class="content_div" style="height: 320px; margin-bottom: 10px;">
+				</div>
+				<div class="content_div" style="height: 320px; margin-bottom: 10px;">
+				</div>
+				<div class="content_div" style="height: 250px;">
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html> 

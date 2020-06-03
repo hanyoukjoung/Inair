@@ -1,0 +1,12 @@
+package kr.or.inair.companymember.work.service;
+import kr.or.inair.companymember.work.dao.ICompanyMEMWorkDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMEMWorkServiceImpl implements ICompanyMEMWorkService {
+	@Autowired
+	private ICompanyMEMWorkDao wordDao;
+
+}

@@ -1,0 +1,5 @@
+package kr.or.inair.individualmember.hopepro.service;
+
+public interface IHopePROService {
+
+}

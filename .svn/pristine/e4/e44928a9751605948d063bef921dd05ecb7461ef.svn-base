@@ -1,0 +1,12 @@
+package kr.or.inair.individualmember.joboffersubmit.service;
+import kr.or.inair.individualmember.joboffersubmit.dao.copy.IJOSubmitDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IJOSubmitServiceImpl implements IJOSubmitService {
+	@Autowired
+	private IJOSubmitDao jobOfferSubmitDao;
+
+}

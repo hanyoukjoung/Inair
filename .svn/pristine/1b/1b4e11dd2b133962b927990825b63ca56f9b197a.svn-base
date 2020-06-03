@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="resume">
+	<typeAlias alias="resumeVO" type="kr.or.inair.vo.ResumeVO"/>
+	
+	<resultMap id="resumeResultMap" class="resumeVO">
+		<result property="indvdl_id" column="indvdl_id"/>
+		<result property="resume_num" column="resume_num"/>
+		<result property="resume_sj" column="resume_sj"/>
+		<result property="resume_adres1" column="resume_adres1"/>
+		<result property="resume_adres2" column="resume_adres2"/>
+		<result property="salary_num" column="salary_num"/>
+		<result property="emplym_num" column="emplym_num"/>
+		<result property="work_num" column="work_num"/>
+		<result property="fin_acdmcr_num" column="fin_acdmcr_num"/>
+		<result property="resume_hope_area" column="resume_hope_area"/>
+		<result property="lowpro_num" column="lowpro_num"/>
+		<result property="resume_rgsde" column="resume_rgsde"/>
+		<result property="academicDetaList" column="resume_num" select="academicDeta.academicDetaList"/>
+		<result property="careerInfoList" column="resume_num" select="career.careerList"/>
+		<result property="cerificatieList" column="resume_num" select="cerificatie.cerificatieList"/>
+		<result property="winningPrizeList" column="resume_num" select="winningPrize.winningPrizeList"/>
+		<result property="lstcsListList" column="resume_num" select="lstcsList.lstcsListList"/>
+		<result property="selfIntroductionList" column="resume_num" select="selfIntroduction.selfIntroductionList"/>
+		<result property="portfolioList" column="resume_num" select="portfolio.portfolioList"/>
+		<result property="lowproList" column="lowpro_num" select="lowpro.selectLowproList"/>
+	</resultMap>
+	
+	<select id="getResumeList" parameterClass="String" resultClass="resumeVO">
+		SELECT RESUME_NUM,
+		       RESUME_SJ, 
+		       TO_CHAR(RESUME_RGSDE, 'YYYY-MM-DD') AS RESUME_RGSDE,
+		       RESUME_HOPE_AREA,
+		       S.SALARY_SCOPE AS SALARYSTRING,
+			   F.FIN_ACDMCR AS FIN_ACDMCRSTRING
+		FROM   RESUME R, SALARY S, FINAL_ACADEMIC F
+		WHERE  R.SALARY_NUM = S.SALARY_NUM 
+		AND    R.FIN_ACDMCR_NUM = F.FIN_ACDMCR_NUM
+		AND    INDVDL_ID = #indvdl_id#
+		AND    RESUME_DELETE = 'N' 
+		ORDER  BY RESUME_NUM DESC
+	</select>
+	
+	<insert id="insertResume" parameterClass="resumeVO">
+		<selectKey keyProperty="resume_num" resultClass="String">
+			SELECT SEQ_RESUME.NEXTVAL FROM DUAL 
+		</selectKey>
+		INSERT INTO RESUME(RESUME_NUM
+						  ,INDVDL_ID
+						  ,RESUME_SJ
+						  ,RESUME_ADRES1
+						  ,RESUME_ADRES2
+						  ,RESUME_DELETE
+						  ,SALARY_NUM
+						  ,EMPLYM_NUM
+						  ,WORK_NUM
+						  ,FIN_ACDMCR_NUM
+						  ,RESUME_RGSDE
+						  ,RESUME_HOPE_AREA
+						  ,LOWPRO_NUM) 
+		VALUES(#resume_num#
+			  ,#indvdl_id#
+			  ,#resume_sj#
+			  ,#resume_adres1#
+			  ,#resume_adres2#
+			  ,'N'
+			  ,#salary_num#
+			  ,#emplym_num#
+			  ,#work_num#
+			  ,#fin_acdmcr_num#
+			  ,TO_CHAR(SYSDATE,'YYYY-MM-DD')
+			  ,#resume_hope_area#
+			  ,#lowpro_num#)				  
+	</insert>
+	
+	<select id="getResumeInfo" parameterClass="String" resultMap="resumeResultMap">
+		SELECT * 
+		FROM   RESUME 
+		WHERE  RESUME_NUM = #resume_num#
+	</select>
+	
+	<update id="deleteResume" parameterClass="String">
+		UPDATE RESUME 
+		SET    RESUME_DELETE = 'Y' 
+		WHERE  RESUME_NUM = #resume_num#
+	</update>
+	
+	<select id="resumeList" resultClass="resumeVO">
+		SELECT *
+		  FROM RESUME
+		 WHERE RESUME_DELETE = 'N'
+	</select>
+	
+	<select id="getResumeInfoList" parameterClass="Map" resultMap="resumeResultMap">
+		SELECT * 
+		FROM   RESUME 
+		WHERE  INDVDL_ID = #indvdl_id#
+	</select>
+	
+	<update id="updateResumeInfo" parameterClass="resumeVO">
+		UPDATE RESUME 
+		SET    RESUME_SJ = #resume_sj#
+			  ,RESUME_ADRES1 = #resume_adres1#
+			  ,RESUME_ADRES2 = #resume_adres2#
+			  ,SALARY_NUM = #salary_num#
+			  ,EMPLYM_NUM = #emplym_num#
+			  ,WORK_NUM = #work_num#
+			  ,FIN_ACDMCR_NUM = #fin_acdmcr_num#
+			  ,RESUME_RGSDE = TO_CHAR(SYSDATE,'YYYY-MM-DD')
+			  ,RESUME_HOPE_AREA = #resume_hope_area#
+			  ,LOWPRO_NUM = #lowpro_num# 
+		WHERE RESUME_NUM = #resume_num#	  
+	</update>
+</sqlMap> 

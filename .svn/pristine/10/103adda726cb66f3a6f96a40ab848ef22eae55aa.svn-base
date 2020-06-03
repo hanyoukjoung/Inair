@@ -1,0 +1,13 @@
+package kr.or.inair.admin.employment.service;
+
+import kr.or.inair.admin.employment.dao.IAdminEmploymentDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IAdminEmploymentServiceImpl implements IAdminEmploymentService {
+	@Autowired
+	private IAdminEmploymentDao employmentDao;
+
+}

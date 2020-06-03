@@ -1,0 +1,5 @@
+package kr.or.inair.admin.upindustry.service;
+
+public interface IAdminUpIndustryService {
+
+}

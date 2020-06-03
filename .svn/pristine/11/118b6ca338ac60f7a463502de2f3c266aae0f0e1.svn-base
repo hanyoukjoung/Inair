@@ -1,0 +1,5 @@
+package kr.or.inair.individualmember.airesult.service;
+
+public interface IAIResultService {
+
+}

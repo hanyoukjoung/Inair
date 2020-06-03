@@ -1,0 +1,58 @@
+package kr.or.inair.vo;
+
+public class JoSubmitChartsVO {
+	//성별 차트 변수
+	private int fcount;					//지원자 여성 수 
+    private int mcount;                 //지원자 남성 수 
+    
+    //연봉 현황 차트 변수 
+    private int salaryscope1;           //2,200미만
+    private int salaryscope2;           //2,200 ~ 2,600
+    private int salaryscope3;           //2,600 ~ 3,000
+    private int salaryscope4;           //3,000 ~ 4,000
+    private int salaryscope5;			//4,000이상
+
+    public int getFcount() {
+		return fcount;
+	}
+	public void setFcount(int fcount) {
+		this.fcount = fcount;
+	}
+	public int getMcount() {
+		return mcount;
+	}
+	public void setMcount(int mcount) {
+		this.mcount = mcount;
+	}
+	public int getSalaryscope1() {
+		return salaryscope1;
+	}
+	public void setSalaryscope1(int salaryscope1) {
+		this.salaryscope1 = salaryscope1;
+	}
+	public int getSalaryscope2() {
+		return salaryscope2;
+	}
+	public void setSalaryscope2(int salaryscope2) {
+		this.salaryscope2 = salaryscope2;
+	}
+	public int getSalaryscope3() {
+		return salaryscope3;
+	}
+	public void setSalaryscope3(int salaryscope3) {
+		this.salaryscope3 = salaryscope3;
+	}
+	public int getSalaryscope4() {
+		return salaryscope4;
+	}
+	public void setSalaryscope4(int salaryscope4) {
+		this.salaryscope4 = salaryscope4;
+	}
+	public int getSalaryscope5() {
+		return salaryscope5;
+	}
+	public void setSalaryscope5(int salaryscope5) {
+		this.salaryscope5 = salaryscope5;
+	}
+	
+}

@@ -1,0 +1,5 @@
+package kr.or.inair.companymember.aimovie.dao;
+
+public interface ICompanyMEMAIMovieDao {
+
+}

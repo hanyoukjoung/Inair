@@ -1,0 +1,5 @@
+package kr.or.inair.companymember.resume.dao;
+
+public interface ICompanyMEMResumeDao {
+
+}

@@ -1,0 +1,12 @@
+package kr.or.inair.admin.language.service;
+import kr.or.inair.admin.language.dao.IAdminLanguageDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IAdminLanguageServiceImpl implements IAdminLanguageService {
+	@Autowired
+	private IAdminLanguageDao languadeDao;
+
+}

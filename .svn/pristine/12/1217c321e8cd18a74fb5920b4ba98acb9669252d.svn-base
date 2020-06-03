@@ -1,0 +1,11 @@
+package kr.or.inair.companymember.jobofferfile.dao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+@Repository
+public class ICompanyMEMJobOfferFileDaoImpl implements ICompanyMEMJobOfferFileDao {
+	@Autowired
+	private SqlMapClient client;
+
+}

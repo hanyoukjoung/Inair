@@ -1,0 +1,5 @@
+package kr.or.inair.review.service;
+
+public interface IReviewService {
+
+}

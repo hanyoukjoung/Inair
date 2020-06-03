@@ -1,0 +1,140 @@
+package kr.or.inair.admin.itemmanagement.service;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import kr.or.inair.admin.itemmanagement.dao.ItemManagementDao;
+import kr.or.inair.vo.ClassOfPositionVO;
+import kr.or.inair.vo.LanguageVO;
+import kr.or.inair.vo.SalaryVO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+@Service
+public class ItemManagementServiceImpl implements ItemManagementService {
+	@Autowired
+	private ItemManagementDao itemManagementDao;
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW,readOnly=true)
+	@Override
+	public List<LanguageVO> adminLanguageList(Map<String, String> params) throws Exception {
+		List<LanguageVO> adminLanguageList = null;
+		adminLanguageList = itemManagementDao.adminLanguageList(params);
+		return adminLanguageList;
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW,readOnly=true)
+	@Override
+	public String totalCount(Map<String, String> params) throws Exception {
+		String totalCount = "0";
+		totalCount = itemManagementDao.totalCount(params);
+		return totalCount;
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW,rollbackFor={Exception.class})
+	@Override
+	public void insertLanguage(LanguageVO languageInfo) throws Exception {
+		try {
+			itemManagementDao.insertLanguage(languageInfo);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW,rollbackFor={Exception.class})
+	@Override
+	public void deleteLanguage(Map<String, String> params) throws Exception {
+		try {
+			itemManagementDao.deleteLanguage(params);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	@Transactional(propagation=Propagation.REQUIRES_NEW,readOnly=true)
+	@Override
+	public List<SalaryVO> salaryList(Map<String, String> params)
+			throws Exception {
+		List<SalaryVO> salaryList =null;
+		salaryList = itemManagementDao.salaryList(params);
+		return salaryList;
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW,readOnly=true)
+	@Override
+	public String getAdminTotalCount() throws Exception {
+		String adminTotalCount ="0";
+		adminTotalCount = itemManagementDao.getAdminTotalCount();
+		return adminTotalCount;
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW,rollbackFor={Exception.class})
+	@Override
+	public void insertSalary(SalaryVO salaryInfo) throws Exception {
+		try {
+			itemManagementDao.insertSalary(salaryInfo);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	
+		
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW,rollbackFor={Exception.class})
+	@Override
+	public void deleteSalary(Map<String, String> params) throws Exception {
+		try {
+			itemManagementDao.deleteSalary(params);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW,readOnly=true)
+	@Override
+	public List<ClassOfPositionVO> classOfPositionList(
+			Map<String, String> params) throws Exception {
+		List<ClassOfPositionVO> classOfPositionList = null;
+		classOfPositionList=itemManagementDao.classOfPositionList(params);
+		return classOfPositionList;
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW,readOnly=true)
+	@Override
+	public String clsfTotal(Map<String, String> params) throws Exception {
+		String clsfTotal = "0";
+		clsfTotal = itemManagementDao.clsfTotal(params);
+		return clsfTotal;
+	}
+	@Transactional(propagation=Propagation.REQUIRES_NEW,rollbackFor={Exception.class})
+	@Override
+	public void insertClsf(ClassOfPositionVO clsfInfo) throws Exception {
+		try {
+			itemManagementDao.insertClsf(clsfInfo);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW,rollbackFor={Exception.class})
+	@Override
+	public void deleteClsf(Map<String, String> params) throws Exception {
+		try {
+			itemManagementDao.deleteClsf(params);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+
+	
+	
+	
+}

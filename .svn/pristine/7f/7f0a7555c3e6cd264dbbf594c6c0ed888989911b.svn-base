@@ -1,0 +1,19 @@
+package kr.or.inair.vo;
+
+public class LanguageVO {
+	private String lang_num;
+	private String lang_kind;
+	
+	public String getLang_num() {
+		return lang_num;
+	}
+	public void setLang_num(String lang_num) {
+		this.lang_num = lang_num;
+	}
+	public String getLang_kind() {
+		return lang_kind;
+	}
+	public void setLang_kind(String lang_kind) {
+		this.lang_kind = lang_kind;
+	}
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lowIndustry">
+	<typeAlias alias="lowIndustryVO" type="kr.or.inair.vo.LowIndustryVO"/>
+	
+	<statement id="lowIndustryList" resultClass="lowIndustryVO">
+		SELECT * 
+		FROM   LOWINDUSTRY 
+		WHERE  UPINDUTY_NUM = #upinduty_num# 
+	</statement>
+	
+	<select id="getLowIndustryList" resultClass="lowIndustryVO">
+		SELECT * 
+		FROM   LOWINDUSTRY 
+		WHERE  UPINDUTY_NUM = #upinduty_num#
+	</select>
+	
+	<select id="getIndustryInfo" parameterClass="String" resultClass="lowIndustryVO">
+		SELECT A.UPINDUTY_NAME,
+		       B.LWINDUTY_NAME
+		FROM   UPINDUSTRY A, LOWINDUSTRY B 
+		WHERE  B.LWINDUTY_NUM = #lwinduty_num# 
+		AND    A.UPINDUTY_NUM = B.UPINDUTY_NUM
+	</select>
+</sqlMap> 

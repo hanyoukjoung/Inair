@@ -1,0 +1,131 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+
+#title{
+	text-align: center;
+}
+
+#buttons_wrapper{
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+.buttons{
+	border: none;
+	width: 100px;
+	height: 50px;
+	font-size: 16px;
+}
+
+li{
+	margin-bottom: 20px;
+}
+
+#cancel{
+	background-color: #8e8e8e;
+	color: white;
+	margin-right: 15px;
+}
+
+#confirm{
+	background-color: #4271d7;
+	color: white;
+}
+
+.li_titles{
+	display: block;
+}
+
+</style>
+<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript">
+var i = 2; // 로딩이미지 돌리기위한 변수
+var objPopup; // 자식창을 담을 변수
+
+$(function(){
+	
+	// ai모의면접 확인 버튼 클릭 이벤트
+	$('#confirm').click(function(){
+		var url = "/AIIMT/AIIMTPrepareForm.do";
+		var popupWidth = 1920; // 팝업창 가로크기
+		var popupHeight = 950; // 팝업창 세로 크기
+
+		var popupX = (screen.availWidth / 2) - (popupWidth / 2); // 팝업창 x축위치
+		var popupY = (screen.availHeight / 2) - (popupHeight / 2); // 팝업창 y축위치
+		var options = "width=" + popupWidth + ", height=" + popupHeight + ", left=" + popupX + ", top=" + popupY; // 팝업창 옵션 세팅
+		
+		objPopup = window.open(url, 'AI모의면접', options); // 팝업창을 열고 팝업창을 담을 전역변수 초기화
+		LoadingWidthMask(); // 팝업창을 띄우고 부모창 막기
+	});
+	
+	// 로딩화면 이미지 돌리기 (0.2초마다 이미지를 바꿉니다.)
+	setInterval(function(){
+		i++;
+		if(i==13){
+			i=2;
+		}
+		$('#loadingImg').attr("src", "${pageContext.request.contextPath}/images/loadingImgs/loading" + i + ".png");
+	}, 200);
+	
+});
+
+// 자식창 종료 이벤트 (body에 closePopup()함수 실행시 콜백)
+function closePopup(){
+	if(objPopup != null) {
+		objPopup.close();
+	}
+}
+
+// ai모의면접 진행시 부모창 막기
+function LoadingWidthMask() {
+	var maskHeight = $(document).height();
+	var maskWidth = window.document.body.clientWidth;
+	
+	var mask = '';
+	mask += "<div id='mask' style='position:absolute; z-index:9000; background-color:#000000; display:none; left:0; top:0;'>";
+	mask += "</div>";
+	
+	var img = '';
+	img += "<div style='background-color: white; width: 600px; height: 300px; display:inline-block; position: absolute; z-index: 9001; top: 350px; left:650px; margin: auto; border: 1px solid black;'>";
+	img += " <img src='${pageContext.request.contextPath}/images/loadingImgs/loading1.png' id='loadingImg' style=' width:128px; height:128px; display: block; margin: auto; margin-top: 20px; margin-bottom: 20px;'/>";
+	img += " <b style='color: black; font-size: 32px; margin-left: 40px; margin-top: 30px;'>AI모의면접이 진행중입니다. (종료:F5)</b>";
+	img += "</div>";
+	
+	$('body').append(mask);
+	$('body').append(img);
+	$('#mask').css({'width' : maskWidth, 'height' : maskHeight, 'opacity' : '0.3'});
+	$('#mask').css({'display' : 'inline-block'});
+}
+
+</script>
+</head>
+<body style="position: relative;" onunload="closePopup();">
+	<div id="title"><h3>AI 모의면접 설명</h3></div>
+	<dir>
+		<ul>
+			<li>
+				<b class="li_titles">1. 대충 중요한 설명제목1</b>
+				<span>대충 중요한 설명1</span>
+			</li>
+			<li>
+				<b class="li_titles">2. 대충 중요한 설명제목2</b>
+				<span>대충 중요한 설명2</span>
+			</li>
+			<li>
+				<b class="li_titles">3. 대충 중요한 설명제목3</b>
+				<span>대충 중요한 설명3</span>
+			</li>
+		</ul>
+	</dir>
+	<div id="buttons_wrapper">
+		<button class="buttons" id="cancel">취소</button>
+		<button class="buttons" id="confirm">확인</button>
+	</div>
+</body>
+</html>

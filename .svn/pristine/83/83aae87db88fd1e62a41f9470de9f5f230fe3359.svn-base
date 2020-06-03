@@ -1,0 +1,5 @@
+package kr.or.inair.individualmember.aimovie.dao;
+
+public interface IAIMovieDao {
+
+}

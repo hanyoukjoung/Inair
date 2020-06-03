@@ -1,0 +1,12 @@
+package kr.or.inair.companymember.aiquest.service;
+import kr.or.inair.companymember.aiquest.dao.ICompanyMEMAIQUESTDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMEMAIQUESTServiceImpl implements ICompanyMEMAIQUESTService {
+	@Autowired
+	private ICompanyMEMAIQUESTDao aiQuestionDao;
+
+}

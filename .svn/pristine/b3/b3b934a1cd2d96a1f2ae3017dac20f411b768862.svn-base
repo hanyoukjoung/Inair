@@ -1,0 +1,12 @@
+package kr.or.inair.companymember.finalacademic.service;
+import kr.or.inair.companymember.finalacademic.dao.ICompanyMEMFinalAcademicDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMEMFinalAcademicServiceImpl implements ICompanyMEMFinalAcademicService {
+	@Autowired
+	private ICompanyMEMFinalAcademicDao finalAcademicDao;
+
+}

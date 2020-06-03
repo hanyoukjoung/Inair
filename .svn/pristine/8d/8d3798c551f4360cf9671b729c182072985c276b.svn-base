@@ -1,0 +1,5 @@
+package kr.or.inair.characterelement.dao;
+
+public interface ICHARELEDao {
+
+}

@@ -1,0 +1,27 @@
+package kr.or.inair.individualmember.joboffersubmit.dao;
+import java.util.List;
+import java.util.Map;
+
+import kr.or.inair.vo.Jo_SubmitVO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+@Repository
+public class IJOSubmitDaoImpl implements IJOSubmitDao {
+	@Autowired
+	private SqlMapClient client;
+
+	@Override
+	public void insertJoSubmit(Map<String, String> params) throws Exception {
+		client.insert("joSubmit.insertJoSubmit", params);
+	}
+
+	@Override
+	public List<Jo_SubmitVO> getjoSubmitList(String jo_num) throws Exception {
+		return client.queryForList("joSubmit.getjoSubmitList", jo_num);
+	}
+	
+}

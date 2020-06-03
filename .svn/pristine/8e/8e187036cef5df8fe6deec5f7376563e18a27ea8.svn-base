@@ -1,0 +1,5 @@
+package kr.or.inair.companymember.aianswer.dao;
+
+public interface ICompanyMEMAIAnswerDao {
+
+}

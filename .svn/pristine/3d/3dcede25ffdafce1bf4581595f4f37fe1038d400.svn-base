@@ -1,0 +1,5 @@
+package kr.or.inair.individualmember.aiquest.service;
+
+public interface IAIQUESTService {
+
+}

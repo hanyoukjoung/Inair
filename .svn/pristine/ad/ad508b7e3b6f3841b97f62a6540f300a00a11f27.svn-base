@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="upindustry">
+	<typeAlias alias="upIndustryVO" type="kr.or.inair.vo.UpIndustryVO"/>
+	
+	<statement id="selectUpindutyName" resultClass="String">
+		SELECT UPINDUTY_NAME
+		FROM   UPINDUSTRY 
+		WHERE  UPINDUTY_NUM = #upinduty_num#
+	</statement>
+	
+	<select id="getUpIndustryList" resultClass="upIndustryVO">
+		SELECT * 
+		FROM   UPINDUSTRY  
+	</select>
+</sqlMap> 

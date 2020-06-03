@@ -1,0 +1,12 @@
+package kr.or.inair.companymember.lowindustry.service;
+import kr.or.inair.companymember.lowindustry.dao.ICompanyMEMLowIndustryDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ICompanyMEMLowIndustryServiceImpl implements ICompanyMEMLowIndustryService {
+	@Autowired
+	private ICompanyMEMLowIndustryDao lowIndustryDao;
+
+}

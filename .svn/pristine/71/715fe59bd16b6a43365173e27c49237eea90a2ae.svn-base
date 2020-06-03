@@ -1,0 +1,79 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<style>
+td{
+	margin-right:5%;
+ 	padding: 10px;
+}
+</style>
+<script type="text/javascript">
+function myFunction() {
+	 var x = document.getElementById("mySelect").value;
+	 if(x=="언어항목"){	
+		 $(".widget-box").hide();
+	 }
+	
+
+}
+
+</script>
+</head>
+<body>
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#" class="current">Tables</a> </div>
+    <h1>Tables</h1>
+  	<table style="width:80%;margin-left:10%">
+  		<tr>  
+  			<td>		 
+			     <div class="control-group">
+			           <div class="controls">
+			              <select id="mySelect" onchange="myFunction()">
+			                  <option>항목관리선택</option>
+			                  <option value="언어항목">언어항목</option>
+			                  <option>급여항목</option>
+			                  <option>직급항목</option>
+			                  <option>상위직종</option>
+			                  <option>하위직종</option>
+			                  <option>상위업종</option>
+			                  <option>하위업종</option>
+			             </select>
+			          </div>
+			     </div>
+		 	</td>
+		 </tr>	
+		 <tr>
+		 	<td>
+			 	<div class="widget-box">
+			          <div class="widget-title"> <span class="icon"> <i class="icon-th"></i> </span>
+			            <h5>Static table</h5>
+			          </div>
+			          <div class="widget-content nopadding">
+			            <table class="table table-bordered table-striped" id="LanguageTBY" >
+			              <thead>
+			                <tr>
+			                  <th>코드</th>
+			                  <th>언어</th>
+			                </tr>
+			              </thead>
+			              <tbody>
+			                <tr class="odd gradeX">
+			                  <td>Trident</td>
+			                  <td>Internet</td>
+			                </tr>
+			              </tbody>
+			            </table>
+			          </div>
+			        </div>
+		        </td>
+    		</tr>
+        </table> 
+      </div>
+    </div>
+</body>
+</html>

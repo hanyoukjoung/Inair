@@ -1,0 +1,5 @@
+package kr.or.inair.companymember.aivoice.dao;
+
+public interface ICompanyMEMAIVoiceDao {
+
+}

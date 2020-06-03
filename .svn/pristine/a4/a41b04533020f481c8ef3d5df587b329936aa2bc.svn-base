@@ -1,0 +1,39 @@
+package kr.or.inair.controller.admin;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import kr.or.inair.admin.language.service.IAdminLanguageService;
+import kr.or.inair.vo.LanguageVO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+//항목관리 페이지
+@Controller
+@RequestMapping("/admin/ItemManagement/")
+public class AdminItemManagementController {
+	@Autowired
+	private IAdminLanguageService iadminLanguageService;
+	
+	
+	@RequestMapping("itemManagementHome")
+	public ModelAndView itemManagementHome(ModelAndView andView) throws Exception{
+		List<LanguageVO> languageList = this.iadminLanguageService.adminLanguageList();
+		andView.addObject("languageList", languageList);
+		andView.setViewName("admin/ItemManagement/itemManagementHome");
+		return andView;
+	}
+	
+
+	
+	
+	
+	
+	
+	
+}

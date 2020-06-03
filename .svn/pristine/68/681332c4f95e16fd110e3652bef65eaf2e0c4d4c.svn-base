@@ -1,0 +1,12 @@
+package kr.or.inair.individualmember.aimovie.service;
+import kr.or.inair.individualmember.aimovie.dao.IAIMovieDao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IAIMovieServiceImpl implements IAIMovieService {
+	@Autowired
+	private IAIMovieDao aiMovieDao;
+
+}

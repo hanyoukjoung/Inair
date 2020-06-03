@@ -1,0 +1,11 @@
+package kr.or.inair.admin.language.dao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.ibatis.sqlmap.client.SqlMapClient;
+
+@Repository
+public class IAdminLanguageDaoImpl implements IAdminLanguageDao {
+	@Autowired
+	private SqlMapClient client;
+
+}

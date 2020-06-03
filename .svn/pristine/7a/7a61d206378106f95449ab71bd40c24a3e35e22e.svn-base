@@ -1,0 +1,22 @@
+package kr.or.inair.admin.language.service;
+import java.util.List;
+
+import kr.or.inair.admin.language.dao.IAdminLanguageDao;
+import kr.or.inair.vo.LanguageVO;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class IAdminLanguageServiceImpl implements IAdminLanguageService {
+	@Autowired
+	private IAdminLanguageDao languadeDao;
+
+	@Override
+	public List<LanguageVO> adminLanguageList() throws Exception {
+		List<LanguageVO> adminLanguageList = null;
+		adminLanguageList = languadeDao.adminLanguageList();
+		return adminLanguageList;
+	}
+
+}
